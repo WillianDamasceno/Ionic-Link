@@ -1,13 +1,32 @@
 import Head from 'next/head'
 
-export default function Home() {
+import { useQuery, gql } from '@apollo/client'
+
+const currencyQuery = gql`
+	query GetRates {
+		rates(currency: "USD") {
+			currency
+		}
+	}
+`
+
+const Home = () => {
+	const { loading, error, data } = useQuery(currencyQuery)
+
+	if (loading) return <p>Loading...</p>
+	if (error) return <p>Error :{error.message}</p>
+
 	return (
 		<>
 			<Head>
 				<title>SetMy.Link</title>
 			</Head>
 
-			<h1>Hello World</h1>
+			{data.rates.map(rate => {
+				return <p key={rate.currency}>{rate.currency}</p>
+			})}
 		</>
 	)
 }
+
+export default Home
