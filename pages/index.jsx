@@ -1,14 +1,7 @@
 import Head from 'next/head'
 
 import { useQuery, gql } from '@apollo/client'
-
-const currencyQuery = gql`
-	query GetRates {
-		rates(currency: "USD") {
-			currency
-		}
-	}
-`
+import { currencyQuery } from '../src/graphql/queries'
 
 const Home = () => {
 	const { loading, error, data } = useQuery(currencyQuery)

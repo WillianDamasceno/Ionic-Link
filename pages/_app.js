@@ -1,7 +1,7 @@
 import '../src/styles/dist/global.css'
 
 import Head from 'next/head'
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from '@apollo/client'
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 
 import { Layout } from '../src/components/layout'
 
