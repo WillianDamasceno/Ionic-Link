@@ -10,6 +10,10 @@ module.exports = {
 				xxl: '1536px',
 			},
 		},
+		fontFamily: {
+      sans: ['Montserrat', 'Graphik', 'sans-serif', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', "Segoe UI", 'Roboto', "Helvetica Neue", 'Arial', "Noto Sans", 'sans-serif', "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"],
+      serif: ['Merriweather', 'serif'],
+    },
 	},
 	plugins: [],
 }
