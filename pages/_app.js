@@ -1,14 +1,10 @@
 import '../src/styles/dist/global.css'
 
 import Head from 'next/head'
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client'
 
 import { Layout } from '../src/components/layout'
-
-const client = new ApolloClient({
-	uri: 'https://48p1r2roz4.sse.codesandbox.io',
-	cache: new InMemoryCache(),
-})
+import { client } from '../src/graphql/client'
 
 const MyApp = ({ Component, pageProps }) => {
 	return (
