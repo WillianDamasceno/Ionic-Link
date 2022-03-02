@@ -14,7 +14,7 @@ const Home = () => {
 					<h2 className='pb-8 text-purple-400 text-3xl text-center '>Thank you for visiting our website!</h2>
 
 					<p className='text-gray-600'>
-						This website is in development, and its main idea is the be a Link Tree, where tou can register link the have a slug, or a short version of it.
+						This website is in development, and its main idea is to be a Link Tree, where you can register unlimited links that have a slug, or just a short version of it.
 					</p>
 
 					<p className='text-gray-600'>
