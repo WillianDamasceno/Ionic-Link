@@ -1,20 +1,20 @@
 import { gql } from 'graphql-request'
 
 export const NEW_CLIENT = gql`
-	mutation MyMutation($firstName: String!, $email: String!, $publicUrlName: String!, $password: String!) {
+	mutation createNewClient($firstName: String!, $email: String!, $publicUrlName: String!, $password: String!, $authToken: String!) {
 		createClient(
-			data: { firstName: $firstName, email: $email, publicUrlName: $publicUrlName, password: $password }
+			data: { firstName: $firstName, email: $email, publicUrlName: $publicUrlName, password: $password, authToken: $authToken }
 		) {
-			id
 			firstName
 			email
+			authToken
 		}
 	}
 `
 
 export const PUBLISH_CLIENT = gql`
-	mutation PublishClientByEmail($email: String!) {
-		publishClient(where: {email: $email}) {
+	mutation PublishClientByPublicUrl($publicUrlName: String!) {
+		publishClient(where: { publicUrlName: $publicUrlName}) {
 			id
 		}
 	}
