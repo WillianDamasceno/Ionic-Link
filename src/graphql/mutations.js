@@ -1,23 +1,21 @@
-import { gql } from '@apollo/client'
+import { gql } from 'graphql-request'
 
-const NEW_CLIENT = gql`
-	mutation createNewClient(
-		$firstName: String!,
-		$email: String!,
-		$password: String!,
-		$publicUrlName: String!
-	) {
+export const NEW_CLIENT = gql`
+	mutation MyMutation($firstName: String!, $email: String!, $publicUrlName: String!, $password: String!) {
 		createClient(
-			data: {
-				firstName: $firstName,
-				email: $email,
-				password: $password,
-				publicUrlName: $publicUrlName
-			}
+			data: { firstName: $firstName, email: $email, publicUrlName: $publicUrlName, password: $password }
 		) {
 			id
 			firstName
-			authToken
+			email
+		}
+	}
+`
+
+export const PUBLISH_CLIENT = gql`
+	mutation PublishClientByEmail($email: String!) {
+		publishClient(where: {email: $email}) {
+			id
 		}
 	}
 `

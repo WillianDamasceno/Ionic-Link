@@ -1,6 +1,3 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { GraphQLClient } from 'graphql-request';
 
-export const client = new ApolloClient({
-	uri: process.env.GRAPHCMS_ENDPOINT,
-	cache: new InMemoryCache(),
-})
+export const gcms = new GraphQLClient(process.env.GRAPHCMS_ENDPOINT)

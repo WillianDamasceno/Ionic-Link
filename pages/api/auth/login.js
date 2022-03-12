@@ -1,17 +1,30 @@
 import NextCors from 'nextjs-cors'
 
-import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { CLIENT_NAME_BY_SENSITIVE_INFO } from '../../../src/graphql/queries'
+import { gcms } from '../../../src/graphql/client'
+import { createAuthToken } from '../../../src/utils/auth'
 
-const client = new ApolloClient({
-	uri: process.env.GRAPHCMS_ENDPOINT,
-	cache: new InMemoryCache(),
-})
+const getClientInfoFromCms = async (email, password) => {
+	try {
+		const data = await gcms.request(CLIENT_NAME_BY_SENSITIVE_INFO, {
+			email,
+			password,
+		})
+	
+		const { clients: [ clientSensitiveInfo ] } = data
+		const { authToken } = clientSensitiveInfo
+	
+		clientSensitiveInfo.authToken = authToken || createAuthToken()
+	
+		return clientSensitiveInfo
+	} catch (error) {
+		console.error(error) // TODO: Find a way to keep the errors somewhere
+		return false
+	}
+}
 
-const handler = async (req, res) => {
+const login = async (req, res) => {
 	await NextCors(req, res, {
-		methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-		origin: '*',
 		optionsSuccessStatus: 200,
 	})
 
@@ -21,33 +34,12 @@ const handler = async (req, res) => {
 
 	const { email, password } = req.body
 
-	const {
-		data: {
-			clients: [clientSensitiveInfo],
-		},
-	} = await client.query({
-		query: CLIENT_NAME_BY_SENSITIVE_INFO,
-		variables: {
-			email,
-			password,
-		},
-	})
+	const clientSensitiveInfo = await getClientInfoFromCms(email, password)
+	console.log(clientSensitiveInfo)
 
-	if (clientSensitiveInfo) {
-		if (clientSensitiveInfo.authToken) {
-			clientSensitiveInfo.authToken = setAuthToken()
-		}
-
-		const { firstName, authToken } = clientSensitiveInfo
-
-		res.status(200).json({
-			firstName,
-			authToken,
-			email,
-		})
-	} else {
-		res.status(404).json({ success: false, message: `The e-mail or the password is incorrect` })
-	}
+	clientSensitiveInfo
+		? res.status(200).json(clientSensitiveInfo)
+		: res.status(404).json({ success: false, message: `The e-mail or the password is incorrect` })
 }
 
-export default handler
+export default login

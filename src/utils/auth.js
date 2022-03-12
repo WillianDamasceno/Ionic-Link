@@ -1,1 +1,1 @@
-const createAuthToken = () => String(Math.random()).slice(2)
+export const createAuthToken = () => String(Math.random()).slice(2)
