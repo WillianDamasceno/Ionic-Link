@@ -2,6 +2,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState, useRef } from 'react'
 
+import { Alert } from '../../src/components/alert'
+
 const Register = () => {
 	const validUrlDigits = [...new Set('abcdefghijklmnopqrstuvwxyz0123456789-')]
 	const publicUrlBase = 'ioniclink.com/'
@@ -106,7 +108,7 @@ const Register = () => {
 								required
 								type='password'
 								minLength={8}
-								id='register-input-password'
+								bid='register-input-password'
 								placeholder='Confirm your Password'
 								onBlur={({ target }) => {
 									const { value: password } = passwordInput.current
@@ -121,13 +123,7 @@ const Register = () => {
 						</div>
 					</div>
 
-					<div
-						className={`${
-							isConfirmedPassword ? 'hidden' : ''
-						} p-4 rounded-md text-red-700 font-semibold bg-red-400`}
-					>
-						The passwords does not match
-					</div>
+					<Alert.Error isHidden={isConfirmedPassword} message='The passwords do not match' />
 
 					<div className='grid md:grid-cols-2 gap-4'>
 						<div>
@@ -163,13 +159,7 @@ const Register = () => {
 						</div>
 					</div>
 
-					<div
-						className={`${
-							hasValidPublicUrl ? 'hidden' : ''
-						} p-4 rounded-md text-red-700 font-semibold bg-red-400`}
-					>
-						Invalid Domain or Brand Name
-					</div>
+					<Alert.Error isHidden={hasValidPublicUrl} message='Invalid Domain or Brand Name' />
 
 					<div className='flex gap-2'>
 						<button className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'>

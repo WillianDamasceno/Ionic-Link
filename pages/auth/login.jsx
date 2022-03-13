@@ -2,6 +2,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 
+import { Alert } from '../../src/components/alert'
+
 const Login = () => {
 	const saveUserInfo = (authToken, stayConnected) => {
 		localStorage.setItem('authToken', authToken)
@@ -25,7 +27,6 @@ const Login = () => {
 
 	const connectUser = async (email, password) => {
 		// Redirect if the authToken in the storage is valid
-		
 
 		return await (
 			await fetch('/api/auth/login', {
@@ -152,14 +153,8 @@ const Login = () => {
 							</button>
 						</Link>
 					</div>
-
-					<div
-						className={`${
-							connectionWorked ? 'hidden' : ''
-						} p-4 rounded-md text-red-700 font-semibold bg-red-400`}
-					>
-						The E-mail or the password is incorrect
-					</div>
+					
+					<Alert.Error isHidden={connectionWorked} message="The E-mail or the password is incorrect" />
 				</form>
 			</main>
 		</>
