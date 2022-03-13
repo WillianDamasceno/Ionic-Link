@@ -1,6 +1,7 @@
 import NextCors from 'nextjs-cors'
 
 import { CLIENT_NAME_BY_SENSITIVE_INFO } from '../../../src/graphql/queries'
+import { UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
@@ -12,9 +13,15 @@ const getClientInfoFromCms = async (email, password) => {
 		})
 	
 		const { clients: [ clientSensitiveInfo ] } = data
-		const { authToken } = clientSensitiveInfo
+		const { authToken, publicUrlName } = clientSensitiveInfo
 	
 		clientSensitiveInfo.authToken = authToken || createAuthToken()
+
+		clientSensitiveInfo.authToken === authToken || await gcms.request(UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN, {
+			email,
+			publicUrlName,
+			authToken
+		})
 	
 		return clientSensitiveInfo
 	} catch (error) {
@@ -29,7 +36,7 @@ const login = async (req, res) => {
 	})
 
 	if (req.method !== 'POST') {
-		return res.status(405).json({ success: false, message: 'Only POST requests are allowed' })
+		return res.status(405).json({ success: false, response: 'Only POST requests are allowed' })
 	}
 
 	const { email, password } = req.body
@@ -38,8 +45,8 @@ const login = async (req, res) => {
 	console.log(clientSensitiveInfo)
 
 	clientSensitiveInfo
-		? res.status(200).json(clientSensitiveInfo)
-		: res.status(404).json({ success: false, message: `The e-mail or the password is incorrect` })
+		? res.status(200).json({ success: true, response: clientSensitiveInfo})
+		: res.status(404).json({ success: false, response: `The e-mail or the password is incorrect` })
 }
 
 export default login
