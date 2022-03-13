@@ -6,6 +6,7 @@ export const CLIENT_NAME_BY_SENSITIVE_INFO = gql`
 			firstName
 			authToken
 			email
+			publicUrlName
 		}
 	}
 `
@@ -19,9 +20,10 @@ export const PUBLIC_CLIENT_URL_NANE = gql`
 `
 
 export const REGISTERED_LINKS = gql`
-	query getAllRegisteredLinks($email: String!) {
-		clients(where: { email: $email }) {
+	query getAllRegisteredLinks($authToken: String!) {
+		clients(where: { authToken: $authToken }) {
 			links {
+				id
 				title
 				url
 				active
