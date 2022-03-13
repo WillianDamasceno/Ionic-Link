@@ -12,7 +12,7 @@ const Home = () => {
 		}
 
 		const linkFetch = await (
-			await fetch('http://localhost:3000/api/links', {
+			await fetch('/api/links', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',

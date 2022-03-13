@@ -28,7 +28,7 @@ const Login = () => {
 		
 
 		return await (
-			await fetch('http://localhost:3000/api/auth/login', {
+			await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: {
 					'Accept': 'application/json',
