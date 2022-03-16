@@ -35,17 +35,17 @@ const register = async (req, res) => {
 	}
 
 	const { firstName, email, publicUrlName, password } = req.body
+	console.log(req.body)
 
 	const clientSensitiveInfo = await registerNewClient(firstName, email, publicUrlName, password)
 
 	await gcms.request(PUBLISH_CLIENT, {
-		firstName,
-		authToken: clientSensitiveInfo.authToken
+		publicUrlName
 	})
 
 	clientSensitiveInfo
-		? res.status(200).json(clientSensitiveInfo)
-		: res.status(404).json({ success: false, message: `E-mail is invalid or already taken` })
+		? res.status(200).json({ success: true, response: clientSensitiveInfo})
+		: res.status(404).json({ success: false, response: `E-mail is invalid or already taken` })
 }
 
 export default register

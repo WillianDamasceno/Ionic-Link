@@ -1,18 +1,56 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
+import { Form } from '../../src/components/form'
 import { Alert } from '../../src/components/alert'
 
 const Register = () => {
 	const validUrlDigits = [...new Set('abcdefghijklmnopqrstuvwxyz0123456789-')]
 	const publicUrlBase = 'ioniclink.com/'
 
-	const [publicUrl, setPublicUrl] = useState(publicUrlBase)
-	const [hasValidPublicUrl, setHasValidPublicUrl] = useState(true)
+	const [ connectionWorked, setConnectionWorked ] = useState(true)
 
-	const [isConfirmedPassword, setIsConfirmedPassword] = useState(true)
-	const passwordInput = useRef(null)
+	const registerUser = async (firstName, email, password, domainOrBrandName) => {
+		// Redirect if the authToken in the storage is valid
+
+		return await (
+			await fetch('/api/auth/register', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					firstName,
+					email,
+					password,
+					publicUrlName: domainOrBrandName
+				}),
+			})
+		).json()
+	}
+
+	const handleUserRegistration = async (userRegistrationAttempt) => {
+		setConnectionWorked(true)
+		
+		const userRegistrationStatus = await userRegistrationAttempt
+		const registrationResponse = userRegistrationStatus.response
+
+		userRegistrationStatus.success
+			?	(keepUserConnected(registrationResponse), window.location = '/admin')
+			: setConnectionWorked(false)
+	}
+
+	const keepUserConnected = (userConnectionResponde) => {
+		console.log(userConnectionResponde)
+
+		saveUserInfo(userConnectionResponde.authToken)
+	}
+
+	const saveUserInfo = (authToken) => {
+		localStorage.setItem('authToken', authToken)
+	}
 
 	const isValidDomainName = (domainName, validDigits) => {
 		const isValid = domainName
@@ -23,6 +61,9 @@ const Register = () => {
 
 		return isValid
 	}
+
+	const [publicUrl, setPublicUrl] = useState(publicUrlBase)
+	const [hasValidPublicUrl, setHasValidPublicUrl] = useState(true)
 
 	const renderInvalidDomainOrBrandNameError = () => {
 		setHasValidPublicUrl(false)
@@ -35,6 +76,38 @@ const Register = () => {
 			: renderInvalidDomainOrBrandNameError()
 	}
 
+	const [isConfirmedPassword, setIsConfirmedPassword] = useState(true)
+	
+	const firstNameInput = useRef(null)
+	const emailInput = useRef(null)
+	const passwordInput = useRef(null)
+	const domainOrBrandNameInput = useRef(null)
+
+	const checkPasswords = ({ target }) => {
+		const { value: password } = passwordInput.current
+		const { value: passwordConfirmation } = target
+
+		password === passwordConfirmation || !passwordConfirmation
+			? setIsConfirmedPassword(true)
+			: setIsConfirmedPassword(false)
+	}
+
+	const registerButton = useRef(null)
+	const [isAllowedToRegister, setIsAllowedToRegister] = useState(false)
+
+	useEffect(() => {
+		const registerForm = document.querySelector('.register-form')
+		const everyFormField = [...registerForm.querySelectorAll('input')]
+
+		registerForm.addEventListener('input', () => {
+			const { length: passwordLength } = passwordInput.current.value
+
+			passwordLength >= 8 && everyFormField.every(field => field.value)
+				? setIsAllowedToRegister(true)
+				: setIsAllowedToRegister(false)
+		})
+	}, [])
+
 	return (
 		<>
 			<Head>
@@ -42,106 +115,52 @@ const Register = () => {
 			</Head>
 
 			<main className='grid place-items-center min-h-screen p-4 md:p-8 bg-gray-100 accent-purple-600'>
-				<form className='grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg'>
+				<form className='register-form grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg'>
 					<h1 className='text-4xl'>Sign Up</h1>
 
 					<div className='grid md:grid-cols-2 gap-4'>
-						<div>
-							<label
-								htmlFor='register-input-first-name'
-								className='inline-block px-4 py-2 cursor-pointer'
-							>
-								First Name
-							</label>
-							<input
-								required
-								type='text'
-								tabIndex='1'
-								id='register-input-first-name'
-								placeholder='First Name'
-								className='block w-full p-4 border border-gray-300 rounded-md'
-							/>
-						</div>
+						<Form.Input
+							inputId='first-name'
+							tabIndex='1'
+							placeholder='First Name'
+							inputRef={firstNameInput}
+						/>
 
-						<div>
-							<label
-								htmlFor='register-input-email'
-								className='inline-block px-4 py-2 cursor-pointer'
-							>
-								E-mail
-							</label>
-							<input
-								required
-								type='email'
-								id='register-input-email'
-								placeholder='E-mail'
-								className='block w-full p-4 border border-gray-300 rounded-md'
-							/>
-						</div>
+						<Form.Input
+							inputId='email'
+							placeholder='E-mail'
+							inputRef={emailInput}
+						/>
 
-						<div>
-							<label
-								htmlFor='register-input-password'
-								className='inline-block px-4 py-2 cursor-pointer'
-							>
-								Password
-							</label>
-							<input
-								required
-								type='password'
-								minLength={8}
-								ref={passwordInput}
-								id='register-input-password'
-								placeholder='Password'
-								className='block w-full p-4 border border-gray-300 rounded-md'
-							/>
-						</div>
+						<Form.Input
+							type='password'
+							minLength='8'
+							inputId='password'
+							placeholder='Password'
+							inputRef={passwordInput}
+						/>
 
-						<div>
-							<label
-								htmlFor='register-input-password'
-								className='inline-block px-4 py-2 cursor-pointer'
-							>
-								Confirm your Password
-							</label>
-							<input
-								required
-								type='password'
-								minLength={8}
-								bid='register-input-password'
-								placeholder='Confirm your Password'
-								onBlur={({ target }) => {
-									const { value: password } = passwordInput.current
-									const { value: passwordConfirmation } = target
-
-									password === passwordConfirmation || !passwordConfirmation
-										? setIsConfirmedPassword(true)
-										: setIsConfirmedPassword(false)
-								}}
-								className='block w-full p-4 border border-gray-300 rounded-md'
-							/>
-						</div>
+						<Form.Input
+							type='password'
+							minLength='8'
+							inputId='password-confirmation'
+							placeholder='Confirm your Password'
+							onBlur={checkPasswords}
+						/>
 					</div>
 
-					<Alert.Error isHidden={isConfirmedPassword} message='The passwords do not match' />
+					<Alert.Error
+						isHidden={isConfirmedPassword}
+						message='The passwords do not match'
+					/>
 
 					<div className='grid md:grid-cols-2 gap-4'>
-						<div>
-							<label
-								htmlFor='register-input-domain-name'
-								className='inline-block px-4 py-2 cursor-pointer'
-							>
-								Your Domain or Brand Name
-							</label>
-							<input
-								required
-								type='text'
-								id='register-input-domain-name'
-								placeholder='Domain or Brand'
-								onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
-								className='block w-full p-4 border border-gray-300 rounded-md'
-							/>
-						</div>
+						<Form.Input
+							inputId='domain-name'
+							placeholder='Domain or Brand Name'
+							inputRef={domainOrBrandNameInput}
+							onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
+						/>
 
 						<div>
 							<label
@@ -162,7 +181,18 @@ const Register = () => {
 					<Alert.Error isHidden={hasValidPublicUrl} message='Invalid Domain or Brand Name' />
 
 					<div className='flex gap-2'>
-						<button className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'>
+						<button
+							type={isAllowedToRegister ? 'button' : 'submit'}
+							ref={registerButton}
+							onClick={async () => {
+								const { value: firstName } = firstNameInput.current
+								const { value: email } = emailInput.current
+								const { value: password } = passwordInput.current
+								const { value: domainOrBrandName } = domainOrBrandNameInput.current
+
+								registerButton.current.type === 'button' && await handleUserRegistration(registerUser(firstName, email, password, domainOrBrandName))
+							}}
+							className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'>
 							Register
 						</button>
 

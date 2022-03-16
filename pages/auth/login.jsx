@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 
-import { Alert } from '../../src/components/alert'
+import { Form, Alert } from '../../src/components'
 
 const Login = () => {
 	const saveUserInfo = (authToken, stayConnected) => {
@@ -92,37 +92,23 @@ const Login = () => {
 				<form className='login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl'>
 					<h1 className='text-4xl'>Login</h1>
 
-					<div>
-						<label htmlFor='email' className='inline-block px-4 py-2 cursor-pointer'>
-							E-mail
-						</label>
-						<input
-							required
-							type='email'
-							tabIndex='1'
-							ref={emailInput}
-							id='email'
-							placeholder='E-mail'
-							title='Type your Registered E-mail'
-							className='block w-full p-4 border border-gray-300 rounded-md'
-						/>
-					</div>
+					<Form.Input
+						inputId='email'
+						type='email'
+						placeholder='E-mail'
+						inputRef={emailInput}
+						title='Type your Registered E-mail'
+						tabIndex='1'
+					/>
 
-					<div>
-						<label htmlFor='password' className='inline-block px-4 py-2 cursor-pointer'>
-							Password
-						</label>
-						<input
-							required
-							type='password'
-							ref={passwordInput}
-							minLength={8}
-							id='password'
-							placeholder='Password'
-							title='Type your Password'
-							className='block w-full p-4 border border-gray-300 rounded-md'
-						/>
-					</div>
+					<Form.Input
+						inputId='password'
+						type='password'
+						inputRef={passwordInput}
+						minLength='8'
+						placeholder='Password'
+						title='Type your password'
+					/>
 
 					<div title='Click to Login Automatically'>
 						<input ref={stayConnected} type='checkbox' id='stay-connected' className='w-max mr-2 cursor-pointer' />
