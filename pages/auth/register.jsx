@@ -2,8 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
 
-import { Form } from '../../src/components/form'
-import { Alert } from '../../src/components/alert'
+import { Form, Alert } from '../../src/components'
 
 const Register = () => {
 	const validUrlDigits = [...new Set('abcdefghijklmnopqrstuvwxyz0123456789-')]
@@ -30,6 +29,21 @@ const Register = () => {
 			})
 		).json()
 	}
+
+	const getSavedUserInfo = () => {
+		return {
+			localAuthToken: localStorage.getItem('authToken'),
+			localStayConnected: localStorage.getItem('stayConnected'),
+		}
+	}
+
+	useEffect(() => {
+		const userInfo = getSavedUserInfo()
+
+		if (userInfo.localStayConnected && userInfo.localAuthToken) {
+			return window.location = '/admin'
+		}
+	})
 
 	const handleUserRegistration = async (userRegistrationAttempt) => {
 		setConnectionWorked(true)

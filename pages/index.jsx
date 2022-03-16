@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 
 const Home = () => {
 	return (
@@ -20,6 +21,16 @@ const Home = () => {
 					<p className='text-gray-600 pb-12'>
 						You can also peek one of our page templates to show your link to the people.
 					</p>
+
+					<div className='flex gap-4'>
+						<Link href='/auth/login'>
+							<button className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'>Login</button>
+						</Link>
+						
+						<Link href='/auth/register'>
+							<button className='w-fit py-4 px-3 md:px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'>Sign Up</button>
+						</Link>
+					</div>
 				</div>
 			</main>
 		</>
