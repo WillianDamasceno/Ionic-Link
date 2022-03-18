@@ -88,7 +88,7 @@ const Login = () => {
 				<title>Ionic Link</title>
 			</Head>
 
-			<main className='grid place-items-center min-h-screen p-4 md:p-8 bg-gray-100 accent-purple-600'>
+			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
 				<form className='login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl'>
 					<h1 className='text-4xl'>Login</h1>
 
@@ -108,10 +108,11 @@ const Login = () => {
 						minLength='8'
 						placeholder='Password'
 						title='Type your password'
+						tabIndex='1'
 					/>
 
 					<div title='Click to Login Automatically'>
-						<input ref={stayConnected} type='checkbox' id='stay-connected' className='w-max mr-2 cursor-pointer' />
+						<input ref={stayConnected} type='checkbox' id='stay-connected' tabIndex='1' className='w-max mr-2 cursor-pointer' />
 						<label htmlFor='stay-connected' className='cursor-pointer'>
 							Stay connected
 						</label>
@@ -127,13 +128,14 @@ const Login = () => {
 
 								loginButton.current.type === 'button' && await handleUserConnection(connectUser(email, password))
 							}}
-							className='login-button w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'
+							tabIndex='1'
+							className='login-button w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'
 						>
 							Login
 						</button>
 
 						<Link href='/auth/register'>
-							<button className='w-fit px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'
+							<button tabIndex='1' className='w-fit px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'
 							>
 								Create an account
 							</button>

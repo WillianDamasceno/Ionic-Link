@@ -128,7 +128,7 @@ const Register = () => {
 				<title>Ionic Link</title>
 			</Head>
 
-			<main className='grid place-items-center min-h-screen p-4 md:p-8 bg-gray-100 accent-purple-600'>
+			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
 				<form className='register-form grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg'>
 					<h1 className='text-4xl'>Sign Up</h1>
 
@@ -144,6 +144,7 @@ const Register = () => {
 							inputId='email'
 							placeholder='E-mail'
 							inputRef={emailInput}
+							tabIndex='1'
 						/>
 
 						<Form.Input
@@ -152,6 +153,7 @@ const Register = () => {
 							inputId='password'
 							placeholder='Password'
 							inputRef={passwordInput}
+							tabIndex='1'
 						/>
 
 						<Form.Input
@@ -160,6 +162,7 @@ const Register = () => {
 							inputId='password-confirmation'
 							placeholder='Confirm your Password'
 							onBlur={checkPasswords}
+							tabIndex='1'
 						/>
 					</div>
 
@@ -174,6 +177,7 @@ const Register = () => {
 							placeholder='Domain or Brand Name'
 							inputRef={domainOrBrandNameInput}
 							onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
+							tabIndex='1'
 						/>
 
 						<div>
@@ -206,12 +210,13 @@ const Register = () => {
 
 								registerButton.current.type === 'button' && await handleUserRegistration(registerUser(firstName, email, password, domainOrBrandName))
 							}}
-							className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'>
+							tabIndex='1'
+							className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'>
 							Register
 						</button>
 
 						<Link href='/auth/login'>
-							<button className='w-fit py-4 px-3 md:px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'>
+							<button tabIndex='1' className='w-fit py-4 px-3 md:px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'>
 								Login with my account
 							</button>
 						</Link>

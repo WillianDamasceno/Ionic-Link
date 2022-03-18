@@ -46,7 +46,7 @@ const Home = () => {
 				<div className='container h-max p-8 md:p-16 rounded-3xl bg-white shadow-lg'>
 					<button
 						onClick={logOut}
-						className='w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-700 transition'
+						className='w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'
 					>
 						Log Out
 					</button>
