@@ -98,7 +98,7 @@ const Login = () => {
 					<Form.Input
 						inputId='email'
 						type='email'
-						placeholder='E-mail'
+						label='E-mail'
 						inputRef={emailInput}
 						title='Type your Registered E-mail'
 						autoFocus
@@ -109,7 +109,7 @@ const Login = () => {
 						type='password'
 						inputRef={passwordInput}
 						minLength='8'
-						placeholder='Password'
+						label='Password'
 						title='Type your password'
 					/>
 

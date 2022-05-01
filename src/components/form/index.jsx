@@ -1,4 +1,4 @@
-const Input = ({ inputId, inputRef = '', type = '', placeholder = '', ...rest }) => {
+const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
 	if (rest.optional) {
 		rest.required = 'required'
 	}
@@ -20,10 +20,9 @@ const Input = ({ inputId, inputRef = '', type = '', placeholder = '', ...rest })
 	return (
 		<div>
 			<label htmlFor={inputId} className='inline-block px-4 py-2 cursor-pointer'>
-				{placeholder}
+				{label}
 			</label>
 			<input
-				placeholder={placeholder}
 				className='block w-full p-4 border border-gray-300 rounded-md'
 				{...rest}
 			/>

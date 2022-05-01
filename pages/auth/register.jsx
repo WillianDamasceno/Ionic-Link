@@ -130,8 +130,9 @@ const Register = () => {
 
 					<div className='grid md:grid-cols-2 gap-4'>
 						<Form.Input
+							type='email'
 							inputId='email'
-							placeholder='E-mail'
+							label='E-mail'
 							inputRef={emailInput}
 							autoFocus
 						/>
@@ -140,7 +141,7 @@ const Register = () => {
 							type='password'
 							minLength='8'
 							inputId='password'
-							placeholder='Password'
+							label='Password'
 							inputRef={passwordInput}
 						/>
 
@@ -148,7 +149,7 @@ const Register = () => {
 							type='password'
 							minLength='8'
 							inputId='password-confirmation'
-							placeholder='Confirm your Password'
+							label='Confirm your Password'
 							onBlur={checkPasswords}
 						/>
 					</div>
@@ -158,7 +159,7 @@ const Register = () => {
 					<div className='grid md:grid-cols-2 gap-4'>
 						<Form.Input
 							inputId='domain-name'
-							placeholder='Domain or Brand Name'
+							label='Domain or Brand Name'
 							inputRef={domainOrBrandNameInput}
 							onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
 						/>
