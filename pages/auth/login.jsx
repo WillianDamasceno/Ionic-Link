@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 
 import { Form, Alert } from '../../src/components'
 import { saveUserInfo, getSavedUserInfo } from '../../src/utils/auth'
+import { getClientToken } from '../../src/graphql/client'
 
 const Login = () => {
 	useEffect(() => {
@@ -14,26 +15,9 @@ const Login = () => {
 		}
 	})
 
-	// Redirect if the authToken in the storage is valid
-	const connectUser = async (email, password) => (
-		await fetch('/api/auth/login', {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-				password,
-			}),
-		})
-	).json()
-
 	const stayConnected = useRef(null)
 
 	const keepUserConnected = (userConnectionResponde) => {
-		console.log(userConnectionResponde)
-
 		saveUserInfo(userConnectionResponde.authToken, stayConnected.current.checked)
 	}
 
@@ -48,30 +32,19 @@ const Login = () => {
 		if (userConnectionStatus.success) {
 			keepUserConnected(connectionResponse)
 			window.location = '/admin'
-		} else {
-			setConnectionWorked(false)
+			return
 		}
+
+		setConnectionWorked(false)
 	}
 
-	const [isAllowedToLogin, setIsAllowedToLogin] = useState(false)
+	const [loginPermission, setLoginPermission] = useState(false)
 	const emailInput = useRef(null)
 	const passwordInput = useRef(null)
 	const loginButton = useRef(null)
 
-	useEffect(() => {
-		const loginForm = document.querySelector('.login-form')
-		const everyFormField = [...loginForm.querySelectorAll('input:not([type="checkbox"])')]
-
-		loginForm.addEventListener('input', () => {
-			const { length: passwordLength } = passwordInput.current.value
-
-			if (passwordLength >= 8 && everyFormField.every((field) => field.value)) {
-				setIsAllowedToLogin(true)
-			} else {
-				setIsAllowedToLogin(false)
-			}
-		})
-	}, [])
+	const isAllowedToLogin = () =>
+		emailInput.current.value.length >= 6 && passwordInput.current.value.length >= 8
 
 	return (
 		<>
@@ -80,7 +53,9 @@ const Login = () => {
 			</Head>
 
 			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
-				<form className='
+				<form
+					onInput={() => isAllowedToLogin() && setLoginPermission(true)}
+					className='
 						login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl
 					'
 				>
@@ -118,14 +93,13 @@ const Login = () => {
 
 					<div className='flex gap-2'>
 						<button
-							type={isAllowedToLogin ? 'button' : 'submit'}
+							type={loginPermission ? 'button' : 'submit'}
 							ref={loginButton}
 							onClick={async () => {
-								const { value: email } = emailInput.current
-								const { value: password } = passwordInput.current
-
 								if (loginButton.current.type === 'button') {
-									await handleUserConnection(connectUser(email, password))
+									await handleUserConnection(
+										getClientToken(emailInput.current.value, passwordInput.current.value)
+									)
 								}
 							}}
 							className='

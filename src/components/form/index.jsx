@@ -1,5 +1,5 @@
 const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
-	if (rest.optional) {
+	if (!rest.optional) {
 		rest.required = 'required'
 	}
 

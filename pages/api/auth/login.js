@@ -1,13 +1,13 @@
 import NextCors from 'nextjs-cors'
 
-import { CLIENT_NAME_BY_SENSITIVE_INFO } from '../../../src/graphql/queries'
+import { CLIENT_TOKEN_BY_EMAIL } from '../../../src/graphql/queries'
 import { UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
 const getClientInfoFromCms = async (email, password) => {
 	try {
-		const data = await gcms.request(CLIENT_NAME_BY_SENSITIVE_INFO, {
+		const data = await gcms.request(CLIENT_TOKEN_BY_EMAIL, {
 			email,
 			password,
 		})
