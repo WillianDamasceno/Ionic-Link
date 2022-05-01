@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Router from 'next/router'
 import { useEffect, useState } from 'react'
+import { getRegisteredLinks } from '../../src/graphql/client'
 import { getSavedUserInfo } from '../../src/utils/auth'
 
 const Home = () => {
@@ -11,26 +12,11 @@ const Home = () => {
 
 		if (!authToken) {
 			Router.push('/auth/login')
+			return
 		}
 
-		(async () => {
-			const linkFetch = await (
-				await fetch('/api/links', {
-					method: 'POST',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						authToken,
-					}),
-				})
-			).json()
-
-			const linkResponse = linkFetch.success ? linkFetch.response.registeredLinks : []
-
-			setLinks(linkResponse)
-		})()
+		getRegisteredLinks(authToken)
+			.then(setLinks)
 	}, [])
 
 	const logOut = () => {

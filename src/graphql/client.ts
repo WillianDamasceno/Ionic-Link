@@ -19,3 +19,18 @@ export const getClientToken = async (email: string, password: string) => (
 		}),
 	})
 ).json()
+
+export const getRegisteredLinks = async (authToken: string) => {
+	const linkFetch = await (
+		await fetch('/api/links', {
+			...commonHeaders,
+			body: JSON.stringify({
+				authToken,
+			}),
+		})
+	).json()
+
+	const linkResponse = linkFetch.success ? linkFetch.response.registeredLinks : []
+
+	return linkResponse
+}
