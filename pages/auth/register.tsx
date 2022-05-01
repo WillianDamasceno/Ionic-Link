@@ -4,6 +4,7 @@ import Router from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 
 import { Form, Alert } from '../../src/components'
+import { getSavedUserInfo } from '../../src/utils/auth'
 import { isValidDomainName } from '../../src/utils/validations'
 
 const Register = () => {
@@ -27,15 +28,10 @@ const Register = () => {
 		})
 	).json()
 
-	const getSavedUserInfo = () => ({
-		localAuthToken: localStorage.getItem('authToken'),
-		localStayConnected: localStorage.getItem('stayConnected'),
-	})
-
 	useEffect(() => {
-		const userInfo = getSavedUserInfo()
+		const { stayConnected, authToken } = getSavedUserInfo() || {}
 
-		if (userInfo.localStayConnected && userInfo.localAuthToken) {
+		if (authToken) {
 			Router.push('/admin')
 		}
 	})

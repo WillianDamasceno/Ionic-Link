@@ -5,12 +5,11 @@ import { NEW_CLIENT, PUBLISH_CLIENT } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
-const registerNewClient = async (firstName:string, email:string, publicUrlName:string, password:string) => {
+const registerNewClient = async (email: string, publicUrlName: string, password: string) => {
 	try {
 		const authToken = createAuthToken()
 
 		const data = await gcms.request(NEW_CLIENT, {
-			firstName,
 			email,
 			publicUrlName,
 			password,
@@ -27,7 +26,7 @@ const registerNewClient = async (firstName:string, email:string, publicUrlName:s
 }
 
 // eslint-disable-next-line consistent-return
-const register = async (req:NextApiRequest, res:NextApiResponse) => {
+const register = async (req: NextApiRequest, res: NextApiResponse) => {
 	await NextCors(req, res, {
 		optionsSuccessStatus: 200,
 	})
@@ -36,9 +35,9 @@ const register = async (req:NextApiRequest, res:NextApiResponse) => {
 		return res.status(405).json({ success: false, message: 'Only POST requests are allowed' })
 	}
 
-	const { firstName, email, publicUrlName, password } = req.body
+	const { email, publicUrlName, password } = req.body
 
-	const clientSensitiveInfo = await registerNewClient(firstName, email, publicUrlName, password)
+	const clientSensitiveInfo = await registerNewClient(email, publicUrlName, password)
 
 	await gcms.request(PUBLISH_CLIENT, {
 		publicUrlName,

@@ -1,14 +1,16 @@
 import Head from 'next/head'
+import Router from 'next/router'
 import { useEffect, useState } from 'react'
+import { getSavedUserInfo } from '../../src/utils/auth'
 
 const Home = () => {
 	const [links, setLinks] = useState([])
 
 	useEffect(() => {
-		const localAuthToken = localStorage.getItem('authToken')
+		const { authToken } = getSavedUserInfo() || {}
 
-		if (!localAuthToken) {
-			window.location.href = '/auth/login'
+		if (!authToken) {
+			Router.push('/auth/login')
 		}
 
 		(async () => {
@@ -20,7 +22,7 @@ const Home = () => {
 						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
-						authToken: localAuthToken,
+						authToken,
 					}),
 				})
 			).json()
@@ -32,10 +34,9 @@ const Home = () => {
 	}, [])
 
 	const logOut = () => {
-		localStorage.setItem('authToken', '')
-		localStorage.setItem('stayConnected', '')
+		localStorage.setItem('userAuthInfo', '')
 
-		window.location.href = '/auth/login'
+		Router.push('/auth/login')
 	}
 
 	return (

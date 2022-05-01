@@ -9,9 +9,9 @@ import { getClientToken } from '../../src/graphql/client'
 
 const Login = () => {
 	useEffect(() => {
-		const { localAuthToken, localStayConnected } = getSavedUserInfo()
+		const { authToken, stayConnected } = getSavedUserInfo() || {}
 
-		if (localStayConnected && localAuthToken) {
+		if (authToken) {
 			Router.push('/admin')
 		}
 	})
@@ -20,7 +20,12 @@ const Login = () => {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const keepUserConnected = (userConnectionResponde: any) => {
-		saveUserInfo(userConnectionResponde.authToken, stayConnected.current?.checked)
+		if (stayConnected.current) {
+			saveUserInfo({
+				authToken: userConnectionResponde.authToken,
+				stayConnected: stayConnected.current?.checked
+			})
+		}
 	}
 
 	const [connectionWorked, setConnectionWorked] = useState(true)
