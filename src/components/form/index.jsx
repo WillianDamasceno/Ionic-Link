@@ -1,13 +1,21 @@
-const Input = ({  inputId, inputRef='', type='', placeholder = '', ...rest }) => {
-	rest.optional || (rest.required = 'required')
+const Input = ({ inputId, inputRef = '', type = '', placeholder = '', ...rest }) => {
+	if (rest.optional) {
+		rest.required = 'required'
+	}
 
 	if (!inputId) {
 		throw new Error('<Form.Input /> needs an inputId')
 	}
 
 	rest.id = inputId
-	type && (rest.type = type)
-	inputRef && (rest.ref = inputRef)
+	
+	if (type) {
+		rest.type = type
+	}
+
+	if (inputRef) {
+		rest.ref = inputRef
+	}
 
 	return (
 		<div>

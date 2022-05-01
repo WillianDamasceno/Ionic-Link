@@ -8,52 +8,40 @@ const Register = () => {
 	const validUrlDigits = [...new Set('abcdefghijklmnopqrstuvwxyz0123456789-')]
 	const publicUrlBase = 'ioniclink.com/'
 
-	const [ connectionWorked, setConnectionWorked ] = useState(true)
+	const [connectionWorked, setConnectionWorked] = useState(true)
 
-	const registerUser = async (firstName, email, password, domainOrBrandName) => {
-		// Redirect if the authToken in the storage is valid
+	// Redirect if the authToken in the storage is valid
+	const registerUser = async (firstName, email, password, domainOrBrandName) => (
+		await fetch('/api/auth/register', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				firstName,
+				email,
+				password,
+				publicUrlName: domainOrBrandName,
+			}),
+		})
+	).json()
 
-		return await (
-			await fetch('/api/auth/register', {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					firstName,
-					email,
-					password,
-					publicUrlName: domainOrBrandName
-				}),
-			})
-		).json()
-	}
-
-	const getSavedUserInfo = () => {
-		return {
-			localAuthToken: localStorage.getItem('authToken'),
-			localStayConnected: localStorage.getItem('stayConnected'),
-		}
-	}
+	const getSavedUserInfo = () => ({
+		localAuthToken: localStorage.getItem('authToken'),
+		localStayConnected: localStorage.getItem('stayConnected'),
+	})
 
 	useEffect(() => {
 		const userInfo = getSavedUserInfo()
 
 		if (userInfo.localStayConnected && userInfo.localAuthToken) {
-			return window.location = '/admin'
+			window.location = '/admin'
 		}
 	})
 
-	const handleUserRegistration = async (userRegistrationAttempt) => {
-		setConnectionWorked(true)
-		
-		const userRegistrationStatus = await userRegistrationAttempt
-		const registrationResponse = userRegistrationStatus.response
-
-		userRegistrationStatus.success
-			?	(keepUserConnected(registrationResponse), window.location = '/admin')
-			: setConnectionWorked(false)
+	const saveUserInfo = (authToken) => {
+		localStorage.setItem('authToken', authToken)
 	}
 
 	const keepUserConnected = (userConnectionResponde) => {
@@ -62,8 +50,18 @@ const Register = () => {
 		saveUserInfo(userConnectionResponde.authToken)
 	}
 
-	const saveUserInfo = (authToken) => {
-		localStorage.setItem('authToken', authToken)
+	const handleUserRegistration = async (userRegistrationAttempt) => {
+		setConnectionWorked(true)
+
+		const userRegistrationStatus = await userRegistrationAttempt
+		const registrationResponse = userRegistrationStatus.response
+
+		if (userRegistrationStatus.success) {
+			keepUserConnected(registrationResponse)
+			window.location = '/admin'
+		} else {
+			setConnectionWorked(false)
+		}
 	}
 
 	const isValidDomainName = (domainName, validDigits) => {
@@ -71,7 +69,7 @@ const Register = () => {
 			.toLowerCase()
 			.replaceAll(' ', '-')
 			.split('')
-			.every(domainDigit => validDigits.includes(domainDigit))
+			.every((domainDigit) => validDigits.includes(domainDigit))
 
 		return isValid
 	}
@@ -84,14 +82,16 @@ const Register = () => {
 	}
 
 	const getPublicUrl = (baseUrl, domainOrBrandName) => {
-		isValidDomainName(domainOrBrandName, validUrlDigits)
-			? (setHasValidPublicUrl(true),
-			  setPublicUrl(`${baseUrl}${domainOrBrandName.toLowerCase().replaceAll(' ', '-')}`))
-			: renderInvalidDomainOrBrandNameError()
+		if (isValidDomainName(domainOrBrandName, validUrlDigits)) {
+			setHasValidPublicUrl(true)
+			setPublicUrl(`${baseUrl}${domainOrBrandName.toLowerCase().replaceAll(' ', '-')}`)
+		} else {
+			renderInvalidDomainOrBrandNameError()
+		}
 	}
 
 	const [isConfirmedPassword, setIsConfirmedPassword] = useState(true)
-	
+
 	const firstNameInput = useRef(null)
 	const emailInput = useRef(null)
 	const passwordInput = useRef(null)
@@ -101,9 +101,11 @@ const Register = () => {
 		const { value: password } = passwordInput.current
 		const { value: passwordConfirmation } = target
 
-		password === passwordConfirmation || !passwordConfirmation
-			? setIsConfirmedPassword(true)
-			: setIsConfirmedPassword(false)
+		if (password === passwordConfirmation || !passwordConfirmation) {
+			setIsConfirmedPassword(true)
+		} else {
+			setIsConfirmedPassword(false)
+		}
 	}
 
 	const registerButton = useRef(null)
@@ -116,9 +118,11 @@ const Register = () => {
 		registerForm.addEventListener('input', () => {
 			const { length: passwordLength } = passwordInput.current.value
 
-			passwordLength >= 8 && everyFormField.every(field => field.value)
-				? setIsAllowedToRegister(true)
-				: setIsAllowedToRegister(false)
+			if (passwordLength >= 8 && everyFormField.every((field) => field.value)) {
+				setIsAllowedToRegister(true)
+			} else {
+				setIsAllowedToRegister(false)
+			}
 		})
 	}, [])
 
@@ -129,7 +133,11 @@ const Register = () => {
 			</Head>
 
 			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
-				<form className='register-form grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg'>
+				<form
+					className='
+						register-form grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg
+					'
+				>
 					<h1 className='text-4xl'>Sign Up</h1>
 
 					<div className='grid md:grid-cols-2 gap-4'>
@@ -166,10 +174,7 @@ const Register = () => {
 						/>
 					</div>
 
-					<Alert.Error
-						isHidden={isConfirmedPassword}
-						message='The passwords do not match'
-					/>
+					<Alert.Error isHidden={isConfirmedPassword} message='The passwords do not match' />
 
 					<div className='grid md:grid-cols-2 gap-4'>
 						<Form.Input
@@ -208,15 +213,30 @@ const Register = () => {
 								const { value: password } = passwordInput.current
 								const { value: domainOrBrandName } = domainOrBrandNameInput.current
 
-								registerButton.current.type === 'button' && await handleUserRegistration(registerUser(firstName, email, password, domainOrBrandName))
+								if (registerButton.current.type === 'button') {
+									await handleUserRegistration(registerUser(firstName, email, password, domainOrBrandName))
+								}
 							}}
 							tabIndex='1'
-							className='w-max py-4 px-6 md:px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'>
+							className='
+								w-max py-4 px-6 md:px-8 rounded-md
+								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
+								outline-offset-2 accent-slate-400 transition
+							'
+						>
 							Register
 						</button>
 
 						<Link href='/auth/login'>
-							<button tabIndex='1' className='w-fit py-4 px-3 md:px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'>
+							<button
+								type='button'
+								tabIndex='1'
+								className='
+									w-fit py-4 px-3 md:px-4 rounded-md
+									text-purple-800 hover:text-white active:text-white hover:bg-gray-500
+									outline-offset-2 active:bg-gray-600 transition
+								'
+							>
 								Login with my account
 							</button>
 						</Link>

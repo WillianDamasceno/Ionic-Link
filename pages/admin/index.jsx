@@ -15,7 +15,7 @@ const Home = () => {
 			await fetch('/api/links', {
 				method: 'POST',
 				headers: {
-					'Accept': 'application/json',
+					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
@@ -45,8 +45,12 @@ const Home = () => {
 			<main className='grid place-items-center min-h-screen p-8 bg-gray-100'>
 				<div className='container h-max p-8 md:p-16 rounded-3xl bg-white shadow-lg'>
 					<button
+						type='button'
 						onClick={logOut}
-						className='w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'
+						className='
+							w-max py-4 px-8 rounded-md
+							text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
+							outline-offset-2 accent-slate-400 transition'
 					>
 						Log Out
 					</button>
@@ -56,7 +60,7 @@ const Home = () => {
 					<h2 className='text-center'>Welcome to the Admin</h2>
 
 					{links.length ? (
-						links.map(link => {
+						links.map((link) => {
 							const { id, title, url } = link
 
 							return (
@@ -66,7 +70,7 @@ const Home = () => {
 										<p>{url}</p>
 									</div>
 
-									<p></p>
+									{/* <p></p> */}
 								</div>
 							)
 						})

@@ -1,14 +1,12 @@
 import { Header } from './header'
 import { Footer } from './footer'
 
-export const Layout = ({ children }) => {
-	return (
-		<>
-			<Header />
+export const Layout = ({ children }) => (
+	<>
+		<Header />
 
-			{children}
+		{children}
 
-			<Footer />
-		</>
-	)
-}
+		<Footer />
+	</>
+)

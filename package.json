@@ -11,11 +11,18 @@
 		"graphql-request": "^4.0.0",
 		"next": "latest",
 		"nextjs-cors": "^2.1.0",
+		"prettier": "^2.6.2",
 		"react": "17.0.2",
 		"react-dom": "17.0.2"
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.2",
+		"eslint": "^8.14.0",
+		"eslint-config-airbnb": "^19.0.4",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-jsx-a11y": "^6.5.1",
+		"eslint-plugin-react": "^7.29.4",
+		"eslint-plugin-react-hooks": "^4.5.0",
 		"postcss": "^8.4.6",
 		"tailwindcss": "^3.0.23"
 	}

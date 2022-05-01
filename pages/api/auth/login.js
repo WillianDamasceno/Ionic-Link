@@ -11,18 +11,22 @@ const getClientInfoFromCms = async (email, password) => {
 			email,
 			password,
 		})
-	
-		const { clients: [ clientSensitiveInfo ] } = data
+
+		const {
+			clients: [clientSensitiveInfo],
+		} = data
 		const { authToken, publicUrlName } = clientSensitiveInfo
-	
+
 		clientSensitiveInfo.authToken = authToken || createAuthToken()
 
-		clientSensitiveInfo.authToken === authToken || await gcms.request(UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN, {
-			email,
-			publicUrlName,
-			authToken
-		})
-	
+		if (clientSensitiveInfo.authToken !== authToken) {
+			await gcms.request(UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN, {
+				email,
+				publicUrlName,
+				authToken,
+			})
+		}
+
 		return clientSensitiveInfo
 	} catch (error) {
 		console.error(error) // TODO: Find a way to keep the errors somewhere
@@ -44,9 +48,11 @@ const login = async (req, res) => {
 	const clientSensitiveInfo = await getClientInfoFromCms(email, password)
 	console.log(clientSensitiveInfo)
 
-	clientSensitiveInfo
-		? res.status(200).json({ success: true, response: clientSensitiveInfo})
-		: res.status(404).json({ success: false, response: `The e-mail or the password is incorrect` })
+	if (clientSensitiveInfo) {
+		res.status(200).json({ success: true, response: clientSensitiveInfo })
+	} else {
+		res.status(404).json({ success: false, response: 'The e-mail or the password is incorrect' })
+	}
 }
 
 export default login

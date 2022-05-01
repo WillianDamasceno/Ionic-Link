@@ -9,39 +9,34 @@ const Login = () => {
 		localStorage.setItem('authToken', authToken)
 		localStorage.setItem('stayConnected', String(stayConnected))
 	}
-	
-	const getSavedUserInfo = () => {
-		return {
-			localAuthToken: localStorage.getItem('authToken'),
-			localStayConnected: localStorage.getItem('stayConnected'),
-		}
-	}
+
+	const getSavedUserInfo = () => ({
+		localAuthToken: localStorage.getItem('authToken'),
+		localStayConnected: localStorage.getItem('stayConnected'),
+	})
 
 	useEffect(() => {
 		const userInfo = getSavedUserInfo()
 
 		if (userInfo.localStayConnected && userInfo.localAuthToken) {
-			return window.location = '/admin'
+			window.location = '/admin'
 		}
 	})
 
-	const connectUser = async (email, password) => {
-		// Redirect if the authToken in the storage is valid
-
-		return await (
-			await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					email,
-					password,
-				}),
-			})
-		).json()
-	}
+	// Redirect if the authToken in the storage is valid
+	const connectUser = async (email, password) => (
+		await fetch('/api/auth/login', {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
+			}),
+		})
+	).json()
 
 	const stayConnected = useRef(null)
 
@@ -51,17 +46,20 @@ const Login = () => {
 		saveUserInfo(userConnectionResponde.authToken, stayConnected.current.checked)
 	}
 
-	const [ connectionWorked, setConnectionWorked ] = useState(true)
+	const [connectionWorked, setConnectionWorked] = useState(true)
 
 	const handleUserConnection = async (userConnectionAttempt) => {
 		setConnectionWorked(true)
-		
+
 		const userConnectionStatus = await userConnectionAttempt
 		const connectionResponse = userConnectionStatus.response
 
-		userConnectionStatus.success
-			?	(keepUserConnected(connectionResponse), window.location = '/admin')
-			: setConnectionWorked(false)
+		if (userConnectionStatus.success) {
+			keepUserConnected(connectionResponse)
+			window.location = '/admin'
+		} else {
+			setConnectionWorked(false)
+		}
 	}
 
 	const [isAllowedToLogin, setIsAllowedToLogin] = useState(false)
@@ -76,9 +74,11 @@ const Login = () => {
 		loginForm.addEventListener('input', () => {
 			const { length: passwordLength } = passwordInput.current.value
 
-			passwordLength >= 8 && everyFormField.every(field => field.value)
-				? setIsAllowedToLogin(true)
-				: setIsAllowedToLogin(false)
+			if (passwordLength >= 8 && everyFormField.every((field) => field.value)) {
+				setIsAllowedToLogin(true)
+			} else {
+				setIsAllowedToLogin(false)
+			}
 		})
 	}, [])
 
@@ -89,7 +89,10 @@ const Login = () => {
 			</Head>
 
 			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
-				<form className='login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl'>
+				<form className='
+						login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl
+					'
+				>
 					<h1 className='text-4xl'>Login</h1>
 
 					<Form.Input
@@ -112,7 +115,13 @@ const Login = () => {
 					/>
 
 					<div title='Click to Login Automatically'>
-						<input ref={stayConnected} type='checkbox' id='stay-connected' tabIndex='1' className='w-max mr-2 cursor-pointer' />
+						<input
+							ref={stayConnected}
+							type='checkbox'
+							id='stay-connected'
+							tabIndex='1'
+							className='w-max mr-2 cursor-pointer'
+						/>
 						<label htmlFor='stay-connected' className='cursor-pointer'>
 							Stay connected
 						</label>
@@ -126,23 +135,36 @@ const Login = () => {
 								const { value: email } = emailInput.current
 								const { value: password } = passwordInput.current
 
-								loginButton.current.type === 'button' && await handleUserConnection(connectUser(email, password))
+								if (loginButton.current.type === 'button') {
+									await handleUserConnection(connectUser(email, password))
+								}
 							}}
 							tabIndex='1'
-							className='login-button w-max py-4 px-8 rounded-md text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600 outline-offset-2 accent-slate-400 transition'
+							className='
+								login-button w-max py-4 px-8 rounded-md
+								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
+								outline-offset-2 accent-slate-400 transition
+							'
 						>
 							Login
 						</button>
 
 						<Link href='/auth/register'>
-							<button tabIndex='1' className='w-fit px-4 rounded-md text-purple-800 hover:text-white active:text-white hover:bg-gray-500 outline-offset-2 active:bg-gray-600 transition'
+							<button
+								type='button'
+								tabIndex='1'
+								className='
+									w-fit px-4 rounded-md
+									text-purple-800 hover:text-white active:text-white hover:bg-gray-500
+									outline-offset-2 active:bg-gray-600 transition
+								'
 							>
 								Create an account
 							</button>
 						</Link>
 					</div>
-					
-					<Alert.Error isHidden={connectionWorked} message="The E-mail or the password is incorrect" />
+
+					<Alert.Error isHidden={connectionWorked} message='The E-mail or the password is incorrect' />
 				</form>
 			</main>
 		</>

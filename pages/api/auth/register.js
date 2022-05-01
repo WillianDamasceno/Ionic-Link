@@ -4,20 +4,20 @@ import { NEW_CLIENT, PUBLISH_CLIENT } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
-const registerNewClient = async (firstName, email, publicUrlName, password ) => {
+const registerNewClient = async (firstName, email, publicUrlName, password) => {
 	try {
 		const authToken = createAuthToken()
-		
+
 		const data = await gcms.request(NEW_CLIENT, {
 			firstName,
 			email,
 			publicUrlName,
 			password,
-			authToken
+			authToken,
 		})
-	
+
 		const { createClient: clientSensitiveInfo } = data
-	
+
 		return clientSensitiveInfo
 	} catch (error) {
 		console.error(error) // TODO: Find a way to keep the errors somewhere
@@ -40,12 +40,14 @@ const register = async (req, res) => {
 	const clientSensitiveInfo = await registerNewClient(firstName, email, publicUrlName, password)
 
 	await gcms.request(PUBLISH_CLIENT, {
-		publicUrlName
+		publicUrlName,
 	})
 
-	clientSensitiveInfo
-		? res.status(200).json({ success: true, response: clientSensitiveInfo})
-		: res.status(404).json({ success: false, response: `E-mail is invalid or already taken` })
+	if (clientSensitiveInfo) {
+		res.status(200).json({ success: true, response: clientSensitiveInfo })
+	} else {
+		res.status(404).json({ success: false, response: `E-mail is invalid or already taken` })
+	}
 }
 
 export default register
