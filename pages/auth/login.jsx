@@ -79,17 +79,12 @@ const Login = () => {
 						title='Type your password'
 					/>
 
-					<div title='Click to Login Automatically'>
-						<input
-							ref={stayConnected}
-							type='checkbox'
-							id='stay-connected'
-							className='w-max mr-2 cursor-pointer'
-						/>
-						<label htmlFor='stay-connected' className='cursor-pointer'>
-							Stay connected
-						</label>
-					</div>
+					<Form.Checkbox
+						inputId='stay-connected'
+						inputRef={stayConnected}
+						label='Stay connected'
+						title='Click to Login Automatically'
+					/>
 
 					<div className='flex gap-2'>
 						<button
