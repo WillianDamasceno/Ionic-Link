@@ -11,7 +11,7 @@ const Register = () => {
 	const [connectionWorked, setConnectionWorked] = useState(true)
 
 	// Redirect if the authToken in the storage is valid
-	const registerUser = async (firstName, email, password, domainOrBrandName) => (
+	const registerUser = async (email, password, domainOrBrandName) => (
 		await fetch('/api/auth/register', {
 			method: 'POST',
 			headers: {
@@ -19,7 +19,6 @@ const Register = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				firstName,
 				email,
 				password,
 				publicUrlName: domainOrBrandName,
@@ -92,7 +91,6 @@ const Register = () => {
 
 	const [isConfirmedPassword, setIsConfirmedPassword] = useState(true)
 
-	const firstNameInput = useRef(null)
 	const emailInput = useRef(null)
 	const passwordInput = useRef(null)
 	const domainOrBrandNameInput = useRef(null)
@@ -142,13 +140,6 @@ const Register = () => {
 
 					<div className='grid md:grid-cols-2 gap-4'>
 						<Form.Input
-							inputId='first-name'
-							tabIndex='1'
-							placeholder='First Name'
-							inputRef={firstNameInput}
-						/>
-
-						<Form.Input
 							inputId='email'
 							placeholder='E-mail'
 							inputRef={emailInput}
@@ -186,12 +177,12 @@ const Register = () => {
 						/>
 
 						<div>
-							<label
+							<span
 								htmlFor='register-output-public-url-name'
-								className='inline-block px-4 py-2 cursor-pointer'
+								className='inline-block px-4 py-2'
 							>
 								This will be your Public URL
-							</label>
+							</span>
 							<output
 								id='register-output-public-url-name'
 								className='block w-full p-4 border border-gray-300 rounded-md overflow-x-hidden'
@@ -208,13 +199,12 @@ const Register = () => {
 							type={isAllowedToRegister ? 'button' : 'submit'}
 							ref={registerButton}
 							onClick={async () => {
-								const { value: firstName } = firstNameInput.current
 								const { value: email } = emailInput.current
 								const { value: password } = passwordInput.current
 								const { value: domainOrBrandName } = domainOrBrandNameInput.current
 
 								if (registerButton.current.type === 'button') {
-									await handleUserRegistration(registerUser(firstName, email, password, domainOrBrandName))
+									await handleUserRegistration(registerUser(email, password, domainOrBrandName))
 								}
 							}}
 							tabIndex='1'

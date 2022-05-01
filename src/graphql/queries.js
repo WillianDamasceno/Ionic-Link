@@ -3,7 +3,6 @@ import { gql } from 'graphql-request'
 export const CLIENT_NAME_BY_SENSITIVE_INFO = gql`
 	query getSensitiveInfoByEmail($email: String!, $password: String!) {
 		clients(where: { email: $email, password: $password }) {
-			firstName
 			authToken
 			email
 			publicUrlName

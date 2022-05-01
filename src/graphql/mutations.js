@@ -1,11 +1,10 @@
 import { gql } from 'graphql-request'
 
 export const NEW_CLIENT = gql`
-	mutation createNewClient($firstName: String!, $email: String!, $publicUrlName: String!, $password: String!, $authToken: String!) {
+	mutation createNewClient($email: String!, $publicUrlName: String!, $password: String!, $authToken: String!) {
 		createClient(
-			data: { firstName: $firstName, email: $email, publicUrlName: $publicUrlName, password: $password, authToken: $authToken }
+			data: { email: $email, publicUrlName: $publicUrlName, password: $password, authToken: $authToken }
 		) {
-			firstName
 			email
 			authToken
 			publicUrlName
