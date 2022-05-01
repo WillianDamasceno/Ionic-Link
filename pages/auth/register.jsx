@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { useState, useRef, useEffect } from 'react'
 
 import { Form, Alert } from '../../src/components'
+import { isValidDomainName } from '../../src/utils/validations'
 
 const Register = () => {
-	const validUrlDigits = [...new Set('abcdefghijklmnopqrstuvwxyz0123456789-')]
 	const publicUrlBase = 'ioniclink.com/'
 
 	const [connectionWorked, setConnectionWorked] = useState(true)
@@ -63,16 +63,6 @@ const Register = () => {
 		}
 	}
 
-	const isValidDomainName = (domainName, validDigits) => {
-		const isValid = domainName
-			.toLowerCase()
-			.replaceAll(' ', '-')
-			.split('')
-			.every((domainDigit) => validDigits.includes(domainDigit))
-
-		return isValid
-	}
-
 	const [publicUrl, setPublicUrl] = useState(publicUrlBase)
 	const [hasValidPublicUrl, setHasValidPublicUrl] = useState(true)
 
@@ -81,7 +71,7 @@ const Register = () => {
 	}
 
 	const getPublicUrl = (baseUrl, domainOrBrandName) => {
-		if (isValidDomainName(domainOrBrandName, validUrlDigits)) {
+		if (isValidDomainName(domainOrBrandName)) {
 			setHasValidPublicUrl(true)
 			setPublicUrl(`${baseUrl}${domainOrBrandName.toLowerCase().replaceAll(' ', '-')}`)
 		} else {
@@ -143,7 +133,7 @@ const Register = () => {
 							inputId='email'
 							placeholder='E-mail'
 							inputRef={emailInput}
-							tabIndex='1'
+							autoFocus
 						/>
 
 						<Form.Input
@@ -152,7 +142,6 @@ const Register = () => {
 							inputId='password'
 							placeholder='Password'
 							inputRef={passwordInput}
-							tabIndex='1'
 						/>
 
 						<Form.Input
@@ -161,7 +150,6 @@ const Register = () => {
 							inputId='password-confirmation'
 							placeholder='Confirm your Password'
 							onBlur={checkPasswords}
-							tabIndex='1'
 						/>
 					</div>
 
@@ -173,7 +161,6 @@ const Register = () => {
 							placeholder='Domain or Brand Name'
 							inputRef={domainOrBrandNameInput}
 							onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
-							tabIndex='1'
 						/>
 
 						<div>
@@ -207,7 +194,6 @@ const Register = () => {
 									await handleUserRegistration(registerUser(email, password, domainOrBrandName))
 								}
 							}}
-							tabIndex='1'
 							className='
 								w-max py-4 px-6 md:px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
@@ -220,7 +206,6 @@ const Register = () => {
 						<Link href='/auth/login'>
 							<button
 								type='button'
-								tabIndex='1'
 								className='
 									w-fit py-4 px-3 md:px-4 rounded-md
 									text-purple-800 hover:text-white active:text-white hover:bg-gray-500

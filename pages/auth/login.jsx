@@ -101,7 +101,7 @@ const Login = () => {
 						placeholder='E-mail'
 						inputRef={emailInput}
 						title='Type your Registered E-mail'
-						tabIndex='1'
+						autoFocus
 					/>
 
 					<Form.Input
@@ -111,7 +111,6 @@ const Login = () => {
 						minLength='8'
 						placeholder='Password'
 						title='Type your password'
-						tabIndex='1'
 					/>
 
 					<div title='Click to Login Automatically'>
@@ -119,7 +118,6 @@ const Login = () => {
 							ref={stayConnected}
 							type='checkbox'
 							id='stay-connected'
-							tabIndex='1'
 							className='w-max mr-2 cursor-pointer'
 						/>
 						<label htmlFor='stay-connected' className='cursor-pointer'>
@@ -139,7 +137,6 @@ const Login = () => {
 									await handleUserConnection(connectUser(email, password))
 								}
 							}}
-							tabIndex='1'
 							className='
 								login-button w-max py-4 px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
@@ -152,7 +149,6 @@ const Login = () => {
 						<Link href='/auth/register'>
 							<button
 								type='button'
-								tabIndex='1'
 								className='
 									w-fit px-4 rounded-md
 									text-purple-800 hover:text-white active:text-white hover:bg-gray-500
