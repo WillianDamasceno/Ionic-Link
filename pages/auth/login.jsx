@@ -3,22 +3,13 @@ import Link from 'next/link'
 import { useEffect, useState, useRef } from 'react'
 
 import { Form, Alert } from '../../src/components'
+import { saveUserInfo, getSavedUserInfo } from '../../src/utils/auth'
 
 const Login = () => {
-	const saveUserInfo = (authToken, stayConnected) => {
-		localStorage.setItem('authToken', authToken)
-		localStorage.setItem('stayConnected', String(stayConnected))
-	}
-
-	const getSavedUserInfo = () => ({
-		localAuthToken: localStorage.getItem('authToken'),
-		localStayConnected: localStorage.getItem('stayConnected'),
-	})
-
 	useEffect(() => {
-		const userInfo = getSavedUserInfo()
+		const { localAuthToken, localStayConnected } = getSavedUserInfo()
 
-		if (userInfo.localStayConnected && userInfo.localAuthToken) {
+		if (localStayConnected && localAuthToken) {
 			window.location = '/admin'
 		}
 	})
