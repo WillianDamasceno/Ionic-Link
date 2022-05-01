@@ -1,4 +1,6 @@
-const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
+/* eslint-disable no-param-reassign */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }: any) => {
 	if (!rest.optional) {
 		rest.required = 'required'
 	}
@@ -8,7 +10,7 @@ const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
 	}
 
 	rest.id = inputId
-	
+
 	if (type) {
 		rest.type = type
 	}
@@ -16,8 +18,6 @@ const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
 	if (inputRef) {
 		rest.ref = inputRef
 	}
-
-	console.log(rest)
 
 	return (
 		<div>
@@ -32,7 +32,8 @@ const Input = ({ inputId, inputRef = '', type = '', label = '', ...rest }) => {
 	)
 }
 
-const Checkbox = ({ inputId, inputRef = '', label = '', title = '', ...rest }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Checkbox = ({ inputId, inputRef = '', label = '', title = '', ...rest }: any) => {
 	if (!inputId) {
 		throw new Error('<Form.Input /> needs an inputId')
 	}

@@ -1,4 +1,5 @@
 {
+    "root": true,
     "env": {
         "browser": true,
         "es2021": true
@@ -6,7 +7,9 @@
     "extends": [
         "plugin:react/recommended",
         "airbnb",
-        "plugin:react/jsx-runtime"
+        "plugin:react/jsx-runtime",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -16,7 +19,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
     "rules": {
         "no-console": "off",
@@ -33,6 +37,8 @@
         "import/prefer-default-export": "off",
         "indent": ["error", "tab"],
         "jsx-quotes": ["warn", "prefer-single"],
-        "implicit-arrow-linebreak": "off"
+        "implicit-arrow-linebreak": "off",
+        "import/named": "off",
+        "import/extensions": "off"
     }
 }

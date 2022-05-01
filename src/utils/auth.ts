@@ -1,6 +1,6 @@
 export const createAuthToken = () => crypto.randomUUID()
 
-export const saveUserInfo = (authToken, stayConnected) => {
+export const saveUserInfo = (authToken: string, stayConnected: boolean | undefined) => {
 	localStorage.setItem('authToken', authToken)
 	localStorage.setItem('stayConnected', String(stayConnected))
 }

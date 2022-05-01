@@ -1,3 +1,4 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import NextCors from 'nextjs-cors'
 
 import { CLIENT_TOKEN_BY_EMAIL } from '../../../src/graphql/queries'
@@ -5,7 +6,7 @@ import { UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN } from '../../../src/graphql/mutat
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
-const getClientInfoFromCms = async (email, password) => {
+const getClientInfoFromCms = async (email:string, password:string) => {
 	try {
 		const data = await gcms.request(CLIENT_TOKEN_BY_EMAIL, {
 			email,
@@ -34,7 +35,8 @@ const getClientInfoFromCms = async (email, password) => {
 	}
 }
 
-const login = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const login = async (req:NextApiRequest, res:NextApiResponse) => {
 	await NextCors(req, res, {
 		optionsSuccessStatus: 200,
 	})
@@ -46,7 +48,6 @@ const login = async (req, res) => {
 	const { email, password } = req.body
 
 	const clientSensitiveInfo = await getClientInfoFromCms(email, password)
-	console.log(clientSensitiveInfo)
 
 	if (clientSensitiveInfo) {
 		res.status(200).json({ success: true, response: clientSensitiveInfo })

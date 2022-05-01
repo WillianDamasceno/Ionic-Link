@@ -1,9 +1,11 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import NextCors from 'nextjs-cors'
 
 import { gcms } from '../../../src/graphql/client'
 import { REGISTERED_LINKS } from '../../../src/graphql/queries'
 
-const links = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const links = async (req:NextApiRequest, res:NextApiResponse) => {
 	await NextCors(req, res, {
 		optionsSuccessStatus: 200,
 	})
@@ -19,8 +21,6 @@ const links = async (req, res) => {
 	} = await gcms.request(REGISTERED_LINKS, {
 		authToken,
 	})
-
-	console.log(registeredLinks)
 
 	res.status(200).json({ success: true, response: { registeredLinks } })
 }

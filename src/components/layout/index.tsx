@@ -1,7 +1,8 @@
 import { Header } from './header'
 import { Footer } from './footer'
 
-export const Layout = ({ children }) => (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const Layout = ({ children }: any) => (
 	<>
 		<Header />
 

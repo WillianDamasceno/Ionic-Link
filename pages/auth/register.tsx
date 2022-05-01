@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Router from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 
 import { Form, Alert } from '../../src/components'
@@ -11,7 +12,7 @@ const Register = () => {
 	const [connectionWorked, setConnectionWorked] = useState(true)
 
 	// Redirect if the authToken in the storage is valid
-	const registerUser = async (email, password, domainOrBrandName) => (
+	const registerUser = async (email: string, password: string, domainOrBrandName: string) => (
 		await fetch('/api/auth/register', {
 			method: 'POST',
 			headers: {
@@ -35,21 +36,21 @@ const Register = () => {
 		const userInfo = getSavedUserInfo()
 
 		if (userInfo.localStayConnected && userInfo.localAuthToken) {
-			window.location = '/admin'
+			Router.push('/admin')
 		}
 	})
 
-	const saveUserInfo = (authToken) => {
+	const saveUserInfo = (authToken: string) => {
 		localStorage.setItem('authToken', authToken)
 	}
 
-	const keepUserConnected = (userConnectionResponde) => {
-		console.log(userConnectionResponde)
-
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const keepUserConnected = (userConnectionResponde: any) => {
 		saveUserInfo(userConnectionResponde.authToken)
 	}
 
-	const handleUserRegistration = async (userRegistrationAttempt) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const handleUserRegistration = async (userRegistrationAttempt: any) => {
 		setConnectionWorked(true)
 
 		const userRegistrationStatus = await userRegistrationAttempt
@@ -57,7 +58,7 @@ const Register = () => {
 
 		if (userRegistrationStatus.success) {
 			keepUserConnected(registrationResponse)
-			window.location = '/admin'
+			Router.push('/admin')
 		} else {
 			setConnectionWorked(false)
 		}
@@ -70,7 +71,7 @@ const Register = () => {
 		setHasValidPublicUrl(false)
 	}
 
-	const getPublicUrl = (baseUrl, domainOrBrandName) => {
+	const getPublicUrl = (baseUrl: string, domainOrBrandName: string) => {
 		if (isValidDomainName(domainOrBrandName)) {
 			setHasValidPublicUrl(true)
 			setPublicUrl(`${baseUrl}${domainOrBrandName.toLowerCase().replaceAll(' ', '-')}`)
@@ -85,9 +86,10 @@ const Register = () => {
 	const passwordInput = useRef(null)
 	const domainOrBrandNameInput = useRef(null)
 
-	const checkPasswords = ({ target }) => {
-		const { value: password } = passwordInput.current
-		const { value: passwordConfirmation } = target
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const checkPasswords = ({ target }: any) => {
+		const { value: password } = passwordInput.current || { value: '' }
+		const { value: passwordConfirmation } = target || { value: '' }
 
 		if (password === passwordConfirmation || !passwordConfirmation) {
 			setIsConfirmedPassword(true)
@@ -96,15 +98,15 @@ const Register = () => {
 		}
 	}
 
-	const registerButton = useRef(null)
+	const registerButton = useRef<HTMLButtonElement>(null)
 	const [isAllowedToRegister, setIsAllowedToRegister] = useState(false)
 
 	useEffect(() => {
 		const registerForm = document.querySelector('.register-form')
-		const everyFormField = [...registerForm.querySelectorAll('input')]
+		const everyFormField = [...(registerForm?.querySelectorAll('input') || [])]
 
-		registerForm.addEventListener('input', () => {
-			const { length: passwordLength } = passwordInput.current.value
+		registerForm?.addEventListener('input', () => {
+			const { value: { length: passwordLength } } = passwordInput.current || { value: '' }
 
 			if (passwordLength >= 8 && everyFormField.every((field) => field.value)) {
 				setIsAllowedToRegister(true)
@@ -161,14 +163,12 @@ const Register = () => {
 							inputId='domain-name'
 							label='Domain or Brand Name'
 							inputRef={domainOrBrandNameInput}
-							onInput={({ target }) => getPublicUrl(publicUrlBase, target.value)}
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							onInput={({ target }: any) => getPublicUrl(publicUrlBase, target.value)}
 						/>
 
 						<div>
-							<span
-								htmlFor='register-output-public-url-name'
-								className='inline-block px-4 py-2'
-							>
+							<span className='inline-block px-4 py-2'>
 								This will be your Public URL
 							</span>
 							<output
@@ -187,11 +187,11 @@ const Register = () => {
 							type={isAllowedToRegister ? 'button' : 'submit'}
 							ref={registerButton}
 							onClick={async () => {
-								const { value: email } = emailInput.current
-								const { value: password } = passwordInput.current
-								const { value: domainOrBrandName } = domainOrBrandNameInput.current
+								const { value: email } = emailInput.current || { value: '' }
+								const { value: password } = passwordInput.current || { value: '' }
+								const { value: domainOrBrandName } = domainOrBrandNameInput.current || { value: '' }
 
-								if (registerButton.current.type === 'button') {
+								if (registerButton.current?.type === 'button') {
 									await handleUserRegistration(registerUser(email, password, domainOrBrandName))
 								}
 							}}

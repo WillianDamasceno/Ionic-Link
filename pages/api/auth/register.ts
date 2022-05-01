@@ -1,10 +1,11 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import NextCors from 'nextjs-cors'
 
 import { NEW_CLIENT, PUBLISH_CLIENT } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
-const registerNewClient = async (firstName, email, publicUrlName, password) => {
+const registerNewClient = async (firstName:string, email:string, publicUrlName:string, password:string) => {
 	try {
 		const authToken = createAuthToken()
 
@@ -25,7 +26,8 @@ const registerNewClient = async (firstName, email, publicUrlName, password) => {
 	}
 }
 
-const register = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const register = async (req:NextApiRequest, res:NextApiResponse) => {
 	await NextCors(req, res, {
 		optionsSuccessStatus: 200,
 	})
@@ -35,7 +37,6 @@ const register = async (req, res) => {
 	}
 
 	const { firstName, email, publicUrlName, password } = req.body
-	console.log(req.body)
 
 	const clientSensitiveInfo = await registerNewClient(firstName, email, publicUrlName, password)
 
@@ -46,7 +47,7 @@ const register = async (req, res) => {
 	if (clientSensitiveInfo) {
 		res.status(200).json({ success: true, response: clientSensitiveInfo })
 	} else {
-		res.status(404).json({ success: false, response: `E-mail is invalid or already taken` })
+		res.status(404).json({ success: false, response: 'E-mail is invalid or already taken' })
 	}
 }
 

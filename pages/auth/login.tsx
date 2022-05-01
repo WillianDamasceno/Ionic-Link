@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Router from 'next/router'
 import { useEffect, useState, useRef } from 'react'
 
 import { Form, Alert } from '../../src/components'
@@ -11,19 +12,21 @@ const Login = () => {
 		const { localAuthToken, localStayConnected } = getSavedUserInfo()
 
 		if (localStayConnected && localAuthToken) {
-			window.location = '/admin'
+			Router.push('/admin')
 		}
 	})
 
-	const stayConnected = useRef(null)
+	const stayConnected = useRef<HTMLInputElement>(null)
 
-	const keepUserConnected = (userConnectionResponde) => {
-		saveUserInfo(userConnectionResponde.authToken, stayConnected.current.checked)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const keepUserConnected = (userConnectionResponde: any) => {
+		saveUserInfo(userConnectionResponde.authToken, stayConnected.current?.checked)
 	}
 
 	const [connectionWorked, setConnectionWorked] = useState(true)
 
-	const handleUserConnection = async (userConnectionAttempt) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const handleUserConnection = async (userConnectionAttempt: any) => {
 		setConnectionWorked(true)
 
 		const userConnectionStatus = await userConnectionAttempt
@@ -31,7 +34,7 @@ const Login = () => {
 
 		if (userConnectionStatus.success) {
 			keepUserConnected(connectionResponse)
-			window.location = '/admin'
+			Router.push('/admin')
 			return
 		}
 
@@ -39,12 +42,16 @@ const Login = () => {
 	}
 
 	const [loginPermission, setLoginPermission] = useState(false)
-	const emailInput = useRef(null)
-	const passwordInput = useRef(null)
-	const loginButton = useRef(null)
+	const emailInput = useRef<HTMLInputElement>(null)
+	const passwordInput = useRef<HTMLInputElement>(null)
+	const loginButton = useRef<HTMLButtonElement>(null)
 
-	const isAllowedToLogin = () =>
-		emailInput.current.value.length >= 6 && passwordInput.current.value.length >= 8
+	// eslint-disable-next-line consistent-return
+	const isAllowedToLogin = () => {
+		if (emailInput.current && passwordInput.current) {
+			return emailInput.current?.value.length >= 6 && passwordInput.current?.value.length >= 8
+		}
+	}
 
 	return (
 		<>
@@ -91,9 +98,9 @@ const Login = () => {
 							type={loginPermission ? 'button' : 'submit'}
 							ref={loginButton}
 							onClick={async () => {
-								if (loginButton.current.type === 'button') {
+								if (loginButton.current?.type === 'button' && emailInput.current && passwordInput.current) {
 									await handleUserConnection(
-										getClientToken(emailInput.current.value, passwordInput.current.value)
+										getClientToken(emailInput.current?.value, passwordInput.current?.value),
 									)
 								}
 							}}

@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 
-export const gcms = new GraphQLClient(process.env.GRAPHCMS_ENDPOINT)
+export const gcms = new GraphQLClient(String(process.env.GRAPHCMS_ENDPOINT))
 
 const commonHeaders = {
 	method: 'POST',
@@ -10,7 +10,7 @@ const commonHeaders = {
 	},
 }
 
-export const getClientToken = async (email, password) => (
+export const getClientToken = async (email: string, password: string) => (
 	await fetch('/api/auth/login', {
 		...commonHeaders,
 		body: JSON.stringify({

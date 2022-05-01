@@ -4,29 +4,31 @@ import { useEffect, useState } from 'react'
 const Home = () => {
 	const [links, setLinks] = useState([])
 
-	useEffect(async () => {
+	useEffect(() => {
 		const localAuthToken = localStorage.getItem('authToken')
 
 		if (!localAuthToken) {
 			window.location.href = '/auth/login'
 		}
 
-		const linkFetch = await (
-			await fetch('/api/links', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					authToken: localAuthToken,
-				}),
-			})
-		).json()
+		(async () => {
+			const linkFetch = await (
+				await fetch('/api/links', {
+					method: 'POST',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						authToken: localAuthToken,
+					}),
+				})
+			).json()
 
-		const linkResponse = linkFetch.success ? linkFetch.response.registeredLinks : []
+			const linkResponse = linkFetch.success ? linkFetch.response.registeredLinks : []
 
-		setLinks(linkResponse)
+			setLinks(linkResponse)
+		})()
 	}, [])
 
 	const logOut = () => {
