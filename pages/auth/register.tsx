@@ -8,12 +8,12 @@ import { getSavedUserInfo } from '../../src/utils/auth'
 import { isValidDomainName } from '../../src/utils/validations'
 
 const Register = () => {
-	const publicUrlBase = 'ioniclink.com/'
+	const domain = 'ioniclink.com/'
 
 	const [connectionWorked, setConnectionWorked] = useState(true)
 
 	// Redirect if the authToken in the storage is valid
-	const registerUser = async (email: string, password: string, domainOrBrandName: string) => (
+	const registerUser = async (email: string, password: string, username: string) => (
 		await fetch('/api/auth/register', {
 			method: 'POST',
 			headers: {
@@ -23,44 +23,33 @@ const Register = () => {
 			body: JSON.stringify({
 				email,
 				password,
-				publicUrlName: domainOrBrandName,
+				username,
 			}),
 		})
 	).json()
 
 	useEffect(() => {
-		const { stayConnected, authToken } = getSavedUserInfo() || {}
+		const { authToken } = getSavedUserInfo() || {}
 
 		if (authToken) {
 			Router.push('/admin')
 		}
 	})
 
-	const saveUserInfo = (authToken: string) => {
-		localStorage.setItem('authToken', authToken)
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const keepUserConnected = (userConnectionResponde: any) => {
-		saveUserInfo(userConnectionResponde.authToken)
-	}
-
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleUserRegistration = async (userRegistrationAttempt: any) => {
 		setConnectionWorked(true)
 
 		const userRegistrationStatus = await userRegistrationAttempt
-		const registrationResponse = userRegistrationStatus.response
 
-		if (userRegistrationStatus.success) {
-			keepUserConnected(registrationResponse)
-			Router.push('/admin')
+		if (userRegistrationStatus?.success) {
+			Router.push('/auth/login')
 		} else {
 			setConnectionWorked(false)
 		}
 	}
 
-	const [publicUrl, setPublicUrl] = useState(publicUrlBase)
+	const [publicUrl, setPublicUrl] = useState(domain)
 	const [hasValidPublicUrl, setHasValidPublicUrl] = useState(true)
 
 	const renderInvalidDomainOrBrandNameError = () => {
@@ -87,11 +76,7 @@ const Register = () => {
 		const { value: password } = passwordInput.current || { value: '' }
 		const { value: passwordConfirmation } = target || { value: '' }
 
-		if (password === passwordConfirmation || !passwordConfirmation) {
-			setIsConfirmedPassword(true)
-		} else {
-			setIsConfirmedPassword(false)
-		}
+		setIsConfirmedPassword(password === passwordConfirmation || !passwordConfirmation)
 	}
 
 	const registerButton = useRef<HTMLButtonElement>(null)
@@ -104,11 +89,7 @@ const Register = () => {
 		registerForm?.addEventListener('input', () => {
 			const { value: { length: passwordLength } } = passwordInput.current || { value: '' }
 
-			if (passwordLength >= 8 && everyFormField.every((field) => field.value)) {
-				setIsAllowedToRegister(true)
-			} else {
-				setIsAllowedToRegister(false)
-			}
+			setIsAllowedToRegister(passwordLength >= 8 && everyFormField.every((field) => field.value))
 		})
 	}, [])
 
@@ -160,7 +141,7 @@ const Register = () => {
 							label='Domain or Brand Name'
 							inputRef={domainOrBrandNameInput}
 							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							onInput={({ target }: any) => getPublicUrl(publicUrlBase, target.value)}
+							onInput={({ target }: any) => getPublicUrl(domain, target.value)}
 						/>
 
 						<div>

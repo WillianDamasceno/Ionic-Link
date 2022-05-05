@@ -16,14 +16,14 @@ const getClientInfoFromCms = async (email:string, password:string) => {
 		const {
 			clients: [clientSensitiveInfo],
 		} = data
-		const { authToken, publicUrlName } = clientSensitiveInfo
+		const { authToken, username } = clientSensitiveInfo
 
 		clientSensitiveInfo.authToken = authToken || createAuthToken()
 
 		if (clientSensitiveInfo.authToken !== authToken) {
 			await gcms.request(UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN, {
 				email,
-				publicUrlName,
+				username,
 				authToken,
 			})
 		}

@@ -1,44 +1,44 @@
 import { gql } from 'graphql-request'
 
 export const NEW_CLIENT = gql`
-	mutation createNewClient($email: String!, $publicUrlName: String!, $password: String!, $authToken: String!) {
+	mutation createNewClient($email: String!, $username: String!, $password: String!, $authToken: String!) {
 		createClient (
-			data: { email: $email, publicUrlName: $publicUrlName, password: $password, authToken: $authToken }
+			data: { email: $email, username: $username, password: $password, authToken: $authToken }
 		) {
 			email
 			authToken
-			publicUrlName
+			username
 		}
 	}
 `
 
 export const PUBLISH_CLIENT = gql`
-	mutation PublishClientByPublicUrl($publicUrlName: String!) {
-		publishClient(where: { publicUrlName: $publicUrlName }) {
+	mutation PublishClientByUsername($username: String!) {
+		publishClient(where: { username: $username }) {
 			authToken
 		}
 	}
 `
 
 export const UPDATE_PUBLISHED_USER_AUTH_TOKEN = gql`
-	mutation UpdatePublishedUserAuthToken($authToken: String!, $publicUrlName: String!, $email: String!) {
+	mutation UpdatePublishedUserAuthToken($authToken: String!, $username: String!, $email: String!) {
 		updateClient(
 			data: {authToken: $authToken}
-			where: {publicUrlName: $publicUrlName, email: $email}
+			where: {username: $username, email: $email}
 		) {
 			authToken
 		}
-		publishClient(where: {publicUrlName: $publicUrlName}) {
+		publishClient(where: {username: $username}) {
 			authToken
 		}
 	}
 `
 
 export const UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN = gql`
-	mutation UpdateNonPublishedUserAuthToken($authToken: String!, $publicUrlName: String!, $email: String!) {
+	mutation UpdateNonPublishedUserAuthToken($authToken: String!, $username: String!, $email: String!) {
 		updateClient(
 			data: {authToken: $authToken}
-			where: {publicUrlName: $publicUrlName, email: $email}
+			where: {username: $username, email: $email}
 		) {
 			authToken
 		}

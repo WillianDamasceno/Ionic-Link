@@ -5,13 +5,13 @@ import { NEW_CLIENT, PUBLISH_CLIENT } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createAuthToken } from '../../../src/utils/auth'
 
-const registerNewClient = async (email: string, publicUrlName: string, password: string) => {
+const registerNewClient = async (email: string, username: string, password: string) => {
 	try {
 		const authToken = createAuthToken()
 
 		const data = await gcms.request(NEW_CLIENT, {
 			email,
-			publicUrlName,
+			username,
 			password,
 			authToken,
 		})
@@ -35,18 +35,21 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
 		return res.status(405).json({ success: false, message: 'Only POST requests are allowed' })
 	}
 
-	const { email, publicUrlName, password } = req.body
+	const { email, username, password } = req.body
+	console.log(req.body)
 
-	const clientSensitiveInfo = await registerNewClient(email, publicUrlName, password)
+	if (!(email && username && password)) {
+		return res.status(405).json({ success: false, message: 'Every field should be filled' })
+	}
 
-	await gcms.request(PUBLISH_CLIENT, {
-		publicUrlName,
-	})
+	const clientSensitiveInfo = await registerNewClient(email, username, password)
+
+	await gcms.request(PUBLISH_CLIENT, { username })
 
 	if (clientSensitiveInfo) {
 		res.status(200).json({ success: true, response: clientSensitiveInfo })
 	} else {
-		res.status(404).json({ success: false, response: 'E-mail is invalid or already taken' })
+		res.status(400).json({ success: false, response: 'E-mail is invalid or already taken' })
 	}
 }
 

@@ -5,15 +5,15 @@ export const CLIENT_TOKEN_BY_EMAIL = gql`
 		clients(where: { email: $email, password: $password }) {
 			authToken
 			email
-			publicUrlName
+			username
 		}
 	}
 `
 
 export const PUBLIC_CLIENT_URL_NANE = gql`
-	query getPublicUrl($email: String!) {
+	query getUsername($email: String!) {
 		clients(where: { email: $email }) {
-			publicUrlName
+			username
 		}
 	}
 `
