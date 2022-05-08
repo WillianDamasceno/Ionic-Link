@@ -16,7 +16,7 @@ const Home = () => {
 		}
 
 		getRegisteredLinks(authToken)
-			.then(setLinks)
+			.then((res) => setLinks(res.response.registeredLinks))
 	}, [])
 
 	const logOut = () => {
