@@ -1,0 +1,46 @@
+{
+    "root": true,
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "plugin:react/jsx-runtime",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "no-console": "off",
+        "semi": "off",
+        "no-tabs": "off",
+        "linebreak-style": ["warn", "unix"],
+        "react/jsx-indent": ["error", "tab"],
+        "react/jsx-indent-props": ["error", "tab"],
+        "max-len": ["warn", 130],
+        "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+        "object-curly-newline": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],
+        "import/prefer-default-export": "off",
+        "indent": ["error", "tab"],
+        "jsx-quotes": ["warn", "prefer-single"],
+        "implicit-arrow-linebreak": "off",
+        "import/named": "off",
+        "import/extensions": "off",
+        "comma-dangle": "off",
+        "react/require-default-props": "off"
+    }
+}

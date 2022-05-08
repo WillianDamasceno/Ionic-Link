@@ -1,20 +1,19 @@
 import { gql } from 'graphql-request'
 
-export const CLIENT_NAME_BY_SENSITIVE_INFO = gql`
+export const CLIENT_TOKEN_BY_EMAIL = gql`
 	query getSensitiveInfoByEmail($email: String!, $password: String!) {
 		clients(where: { email: $email, password: $password }) {
-			firstName
 			authToken
 			email
-			publicUrlName
+			username
 		}
 	}
 `
 
 export const PUBLIC_CLIENT_URL_NANE = gql`
-	query getPublicUrl($email: String!) {
+	query getUsername($email: String!) {
 		clients(where: { email: $email }) {
-			publicUrlName
+			username
 		}
 	}
 `
