@@ -10,8 +10,6 @@ import { isValidDomainName } from '../../src/utils/validations'
 const Register = () => {
 	const domain = 'ioniclink.com/'
 
-	const [connectionWorked, setConnectionWorked] = useState(true)
-
 	// Redirect if the authToken in the storage is valid
 	const registerUser = async (email: string, password: string, username: string) => (
 		await fetch('/api/auth/register', {
@@ -38,14 +36,10 @@ const Register = () => {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleUserRegistration = async (userRegistrationAttempt: any) => {
-		setConnectionWorked(true)
-
 		const userRegistrationStatus = await userRegistrationAttempt
 
 		if (userRegistrationStatus?.success) {
 			Router.push('/auth/login')
-		} else {
-			setConnectionWorked(false)
 		}
 	}
 
@@ -65,19 +59,9 @@ const Register = () => {
 		}
 	}
 
-	const [isConfirmedPassword, setIsConfirmedPassword] = useState(true)
-
 	const emailInput = useRef(null)
 	const passwordInput = useRef(null)
 	const domainOrBrandNameInput = useRef(null)
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const checkPasswords = ({ target }: any) => {
-		const { value: password } = passwordInput.current || { value: '' }
-		const { value: passwordConfirmation } = target || { value: '' }
-
-		setIsConfirmedPassword(password === passwordConfirmation || !passwordConfirmation)
-	}
 
 	const registerButton = useRef<HTMLButtonElement>(null)
 	const [isAllowedToRegister, setIsAllowedToRegister] = useState(false)
@@ -99,20 +83,20 @@ const Register = () => {
 				<title>Ionic Link</title>
 			</Head>
 
-			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
+			<main className='grid place-items-center p-4 md:p-8'>
 				<form
 					className='
-						register-form grid gap-4 w-full max-w-4xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg
+						register-form grid gap-4 w-full max-w-2xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg
 					'
 				>
 					<h1 className='text-4xl'>Sign Up</h1>
 
-					<div className='grid md:grid-cols-2 gap-4'>
+					<div className=''>
 						<Form.Input
 							type='email'
 							inputId='email'
 							label='E-mail'
-							inputRef={emailInput}
+							reference={emailInput}
 							autoFocus
 						/>
 
@@ -121,25 +105,15 @@ const Register = () => {
 							minLength='8'
 							inputId='password'
 							label='Password'
-							inputRef={passwordInput}
-						/>
-
-						<Form.Input
-							type='password'
-							minLength='8'
-							inputId='password-confirmation'
-							label='Confirm your Password'
-							onBlur={checkPasswords}
+							reference={passwordInput}
 						/>
 					</div>
 
-					<Alert.Error isHidden={isConfirmedPassword} message='The passwords do not match' />
-
-					<div className='grid md:grid-cols-2 gap-4'>
+					<div className=''>
 						<Form.Input
 							inputId='domain-name'
-							label='Domain or Brand Name'
-							inputRef={domainOrBrandNameInput}
+							label='Username'
+							reference={domainOrBrandNameInput}
 							// eslint-disable-next-line @typescript-eslint/no-explicit-any
 							onInput={({ target }: any) => getPublicUrl(domain, target.value)}
 						/>
@@ -150,14 +124,14 @@ const Register = () => {
 							</span>
 							<output
 								id='register-output-public-url-name'
-								className='block w-full p-4 border border-gray-300 rounded-md overflow-x-hidden'
+								className='block w-full px-4 py-3 border border-gray-300 rounded-md overflow-x-hidden'
 							>
 								{publicUrl}
 							</output>
 						</div>
 					</div>
 
-					<Alert.Error isHidden={hasValidPublicUrl} message='Invalid Domain or Brand Name' />
+					<Alert.Error isHidden={hasValidPublicUrl} message='Username already taken' />
 
 					<div className='flex gap-2'>
 						<button
@@ -173,7 +147,7 @@ const Register = () => {
 								}
 							}}
 							className='
-								w-max py-4 px-6 md:px-8 rounded-md
+								w-max py-3 px-6 md:px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
 								outline-offset-2 accent-slate-400 transition
 							'
@@ -185,7 +159,7 @@ const Register = () => {
 							<button
 								type='button'
 								className='
-									w-fit py-4 px-3 md:px-4 rounded-md
+									w-fit px-3 md:px-4 rounded-md
 									text-purple-800 hover:text-white active:text-white hover:bg-gray-500
 									outline-offset-2 active:bg-gray-600 transition
 								'

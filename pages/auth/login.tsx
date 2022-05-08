@@ -64,7 +64,7 @@ const Login = () => {
 				<title>Ionic Link</title>
 			</Head>
 
-			<main className='grid place-items-center min-h-screen p-4 md:p-8'>
+			<main className='grid place-items-center p-4 mt-4 md:p-8'>
 				<form
 					onInput={() => isAllowedToLogin() && setLoginPermission(true)}
 					className='
@@ -77,7 +77,7 @@ const Login = () => {
 						inputId='email'
 						type='email'
 						label='E-mail'
-						inputRef={emailInput}
+						reference={emailInput}
 						title='Type your Registered E-mail'
 						autoFocus
 					/>
@@ -85,7 +85,7 @@ const Login = () => {
 					<Form.Input
 						inputId='password'
 						type='password'
-						inputRef={passwordInput}
+						reference={passwordInput}
 						minLength='8'
 						label='Password'
 						title='Type your password'
@@ -93,7 +93,7 @@ const Login = () => {
 
 					<Form.Checkbox
 						inputId='stay-connected'
-						inputRef={stayConnected}
+						reference={stayConnected}
 						label='Stay connected'
 						title='Click to Login Automatically'
 					/>
@@ -110,7 +110,7 @@ const Login = () => {
 								}
 							}}
 							className='
-								login-button w-max py-4 px-8 rounded-md
+								login-button w-max py-3 px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
 								outline-offset-2 accent-slate-400 transition
 							'

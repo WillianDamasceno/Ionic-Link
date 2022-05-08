@@ -509,8 +509,50 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-bottom: 1rem;
 }
 
+.mx-\[10vh\]{
+  margin-left: 10vh;
+  margin-right: 10vh;
+}
+
+.my-\[10vh\]{
+  margin-top: 10vh;
+  margin-bottom: 10vh;
+}
+
 .mr-2{
   margin-right: 0.5rem;
+}
+
+.mt-\[\]{
+  margin-top: ;
+}
+
+.mt-\[20vh\]{
+  margin-top: 20vh;
+}
+
+.mt-\[15vh\]{
+  margin-top: 15vh;
+}
+
+.mt-\[10vh\]{
+  margin-top: 10vh;
+}
+
+.mb-\[10vh\]{
+  margin-bottom: 10vh;
+}
+
+.mt-4{
+  margin-top: 1rem;
+}
+
+.mt-8{
+  margin-top: 2rem;
+}
+
+.mt-16{
+  margin-top: 4rem;
 }
 
 .block{
@@ -543,6 +585,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: max-content;
 }
 
+.h-full{
+  height: 100%;
+}
+
 .min-h-screen{
   min-height: 100vh;
 }
@@ -571,8 +617,8 @@ Ensure the default browser behavior of the `hidden` attribute.
   max-width: 32rem;
 }
 
-.max-w-4xl{
-  max-width: 56rem;
+.max-w-2xl{
+  max-width: 42rem;
 }
 
 .cursor-pointer{
@@ -597,6 +643,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .gap-2{
   gap: 0.5rem;
+}
+
+.overflow-hidden{
+  overflow: hidden;
 }
 
 .overflow-x-hidden{
@@ -693,6 +743,11 @@ Ensure the default browser behavior of the `hidden` attribute.
 .px-8{
   padding-left: 2rem;
   padding-right: 2rem;
+}
+
+.py-3{
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .px-4{
@@ -797,9 +852,20 @@ Ensure the default browser behavior of the `hidden` attribute.
   transition-duration: 150ms;
 }
 
+.\[rest\:string\]{
+  rest: string;
+}
+
+/* Reset */
+
 html,
 body {
   height: 100%;
+  min-height: 100vh;
+}
+
+body > #__next {
+  min-height: 100vh;
 }
 
 .hover\:bg-purple-700:hover{
@@ -843,10 +909,6 @@ body {
 }
 
 @media (min-width: 768px){
-  .md\:grid-cols-2{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .md\:p-16{
     padding: 4rem;
   }
