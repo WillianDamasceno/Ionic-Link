@@ -41,6 +41,8 @@
         "import/named": "off",
         "import/extensions": "off",
         "comma-dangle": "off",
-        "react/require-default-props": "off"
+        "react/require-default-props": "off",
+        "no-unused-expressions": "off",
+        "consistent-return": "off"
     }
 }

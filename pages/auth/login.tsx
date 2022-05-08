@@ -7,12 +7,24 @@ import { Form, Alert } from '../../src/components'
 import { saveUserInfo, getSavedUserInfo } from '../../src/utils/auth'
 import { getClientToken } from '../../src/graphql/client'
 
+const isAllowedToLogin = (email: string, password: string) => {
+	const MIN_EMAIL_LENGTH = 6
+	const MIN_PASSWORD_LENGTH = 8
+	const invalidPasswords = Object.freeze(['undefined', 'null'])
+
+	const validEmailLength = email.length >= MIN_EMAIL_LENGTH
+	const validPasswordLength = password.length >= MIN_PASSWORD_LENGTH
+	const validPassword = invalidPasswords.every((invalid) => invalid !== password)
+
+	return validEmailLength && validPasswordLength && validPassword
+}
+
 const Login = () => {
 	useEffect(() => {
 		const { authToken, stayConnected } = getSavedUserInfo() || {}
 
 		if (authToken) {
-			Router.push('/admin')
+			// Router.push('/admin')
 		}
 	})
 
@@ -23,7 +35,7 @@ const Login = () => {
 		if (stayConnected.current) {
 			saveUserInfo({
 				authToken: userConnectionResponde.authToken,
-				stayConnected: stayConnected.current?.checked
+				stayConnected: stayConnected.current?.checked,
 			})
 		}
 	}
@@ -34,11 +46,10 @@ const Login = () => {
 	const handleUserConnection = async (userConnectionAttempt: any) => {
 		setConnectionWorked(true)
 
-		const userConnectionStatus = await userConnectionAttempt
-		const connectionResponse = userConnectionStatus.response
+		const connection = await userConnectionAttempt
 
-		if (userConnectionStatus.success) {
-			keepUserConnected(connectionResponse)
+		if (connection?.success) {
+			keepUserConnected(connection.response)
 			Router.push('/admin')
 			return
 		}
@@ -51,13 +62,6 @@ const Login = () => {
 	const passwordInput = useRef<HTMLInputElement>(null)
 	const loginButton = useRef<HTMLButtonElement>(null)
 
-	// eslint-disable-next-line consistent-return
-	const isAllowedToLogin = () => {
-		if (emailInput.current && passwordInput.current) {
-			return emailInput.current?.value.length >= 6 && passwordInput.current?.value.length >= 8
-		}
-	}
-
 	return (
 		<>
 			<Head>
@@ -66,7 +70,13 @@ const Login = () => {
 
 			<main className='grid place-items-center p-4 mt-4 md:p-8'>
 				<form
-					onInput={() => isAllowedToLogin() && setLoginPermission(true)}
+					onInput={() => {
+						const email = String(emailInput.current?.value)
+						const password = String(passwordInput.current?.value)
+
+						setLoginPermission(false)
+						return isAllowedToLogin(email, password) && setLoginPermission(true)
+					}}
 					className='
 						login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl
 					'
@@ -77,6 +87,7 @@ const Login = () => {
 						inputId='email'
 						type='email'
 						label='E-mail'
+						minLength='6'
 						reference={emailInput}
 						title='Type your Registered E-mail'
 						autoFocus
@@ -105,7 +116,7 @@ const Login = () => {
 							onClick={async () => {
 								if (loginButton.current?.type === 'button' && emailInput.current && passwordInput.current) {
 									await handleUserConnection(
-										getClientToken(emailInput.current?.value, passwordInput.current?.value),
+										getClientToken(emailInput.current?.value, passwordInput.current?.value)
 									)
 								}
 							}}
