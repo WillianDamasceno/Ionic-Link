@@ -4,64 +4,59 @@ import Router from 'next/router'
 import { useState, useRef, useEffect } from 'react'
 
 import { Form, Alert } from '../../src/components'
+import { registerClient } from '../../src/graphql/client'
 import { getSavedUserInfo } from '../../src/utils/auth'
 import { isValidDomainName } from '../../src/utils/validations'
+
+const OutputUrl = ({ username }: any) => {
+	console.log(username)
+
+	return (
+		<div>
+			<span className='inline-block px-4 py-2'>
+				This will be your Public URL
+			</span>
+			<output
+				id='register-output-public-url-name'
+				className='block w-full px-4 py-3 border border-gray-300 rounded-md overflow-x-hidden'
+			>
+				{username}
+			</output>
+		</div>
+	)
+}
 
 const Register = () => {
 	const domain = 'ioniclink.com/'
 
-	// Redirect if the authToken in the storage is valid
-	const registerUser = async (email: string, password: string, username: string) => (
-		await fetch('/api/auth/register', {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-				password,
-				username,
-			}),
-		})
-	).json()
-
 	useEffect(() => {
 		const { authToken } = getSavedUserInfo() || {}
 
-		if (authToken) {
-			Router.push('/admin')
-		}
+		authToken && Router.push('/admin')
 	})
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const handleUserRegistration = async (userRegistrationAttempt: any) => {
 		const userRegistrationStatus = await userRegistrationAttempt
 
-		if (userRegistrationStatus?.success) {
-			Router.push('/auth/login')
-		}
+		userRegistrationStatus?.success && Router.push('/auth/login')
 	}
 
 	const [publicUrl, setPublicUrl] = useState(domain)
-	const [hasValidPublicUrl, setHasValidPublicUrl] = useState(true)
+	const [isValidUsername, setIsValidUsername] = useState(true)
 
-	const renderInvalidDomainOrBrandNameError = () => {
-		setHasValidPublicUrl(false)
-	}
-
-	const getPublicUrl = (baseUrl: string, domainOrBrandName: string) => {
-		if (isValidDomainName(domainOrBrandName)) {
-			setHasValidPublicUrl(true)
-			setPublicUrl(`${baseUrl}${domainOrBrandName.toLowerCase().replaceAll(' ', '-')}`)
+	const getPublicUrl = (baseUrl: string, username: string) => {
+		if (isValidDomainName(username)) {
+			setIsValidUsername(true)
+			setPublicUrl(`${baseUrl}${username.toLowerCase().replaceAll(' ', '-')}`)
 		} else {
-			renderInvalidDomainOrBrandNameError()
+			setIsValidUsername(false)
 		}
 	}
 
 	const emailInput = useRef(null)
 	const passwordInput = useRef(null)
-	const domainOrBrandNameInput = useRef(null)
+	const usernameInput = useRef(null)
 
 	const registerButton = useRef<HTMLButtonElement>(null)
 	const [isAllowedToRegister, setIsAllowedToRegister] = useState(false)
@@ -91,47 +86,35 @@ const Register = () => {
 				>
 					<h1 className='text-4xl'>Sign Up</h1>
 
-					<div className=''>
-						<Form.Input
-							type='email'
-							inputId='email'
-							label='E-mail'
-							reference={emailInput}
-							autoFocus
-						/>
+					<Form.Input
+						type='email'
+						inputId='email'
+						label='E-mail'
+						reference={emailInput}
+						autoFocus
+					/>
 
-						<Form.Input
-							type='password'
-							minLength='8'
-							inputId='password'
-							label='Password'
-							reference={passwordInput}
-						/>
-					</div>
+					<Form.Input
+						type='password'
+						minLength='8'
+						inputId='password'
+						label='Password'
+						reference={passwordInput}
+					/>
 
-					<div className=''>
-						<Form.Input
-							inputId='domain-name'
-							label='Username'
-							reference={domainOrBrandNameInput}
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							onInput={({ target }: any) => getPublicUrl(domain, target.value)}
-						/>
+					<Form.Input
+						inputId='domain-name'
+						label='Username'
+						reference={usernameInput}
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						onInput={({ target }: any) => getPublicUrl(domain, target.value)}
+					/>
 
-						<div>
-							<span className='inline-block px-4 py-2'>
-								This will be your Public URL
-							</span>
-							<output
-								id='register-output-public-url-name'
-								className='block w-full px-4 py-3 border border-gray-300 rounded-md overflow-x-hidden'
-							>
-								{publicUrl}
-							</output>
-						</div>
-					</div>
+					<OutputUrl
+						username={publicUrl}
+					/>
 
-					<Alert.Error isHidden={hasValidPublicUrl} message='Username already taken' />
+					<Alert.Error isHidden={isValidUsername} message='Username already taken' />
 
 					<div className='flex gap-2'>
 						<button
@@ -140,10 +123,10 @@ const Register = () => {
 							onClick={async () => {
 								const { value: email } = emailInput.current || { value: '' }
 								const { value: password } = passwordInput.current || { value: '' }
-								const { value: domainOrBrandName } = domainOrBrandNameInput.current || { value: '' }
+								const { value: username } = usernameInput.current || { value: '' }
 
 								if (registerButton.current?.type === 'button') {
-									await handleUserRegistration(registerUser(email, password, domainOrBrandName))
+									await handleUserRegistration(registerClient(email, password, username))
 								}
 							}}
 							className='
