@@ -1,10 +1,11 @@
 type UserAuthInfo = {
+	email: string
 	authToken: string | null
 	stayConnected: boolean | null
 }
 
-export const saveUserInfo = ({ authToken, stayConnected }: UserAuthInfo) => {
-	localStorage.setItem('userAuthInfo', JSON.stringify({ authToken, stayConnected }))
+export const saveUserInfo = ({ email, authToken, stayConnected }: UserAuthInfo) => {
+	localStorage.setItem('userAuthInfo', JSON.stringify({ email, authToken, stayConnected }))
 }
 
 export const getSavedUserInfo = (): UserAuthInfo | null =>

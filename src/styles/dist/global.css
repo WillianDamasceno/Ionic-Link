@@ -509,50 +509,17 @@ Ensure the default browser behavior of the `hidden` attribute.
   margin-bottom: 1rem;
 }
 
-.mx-\[10vh\]{
-  margin-left: 10vh;
-  margin-right: 10vh;
-}
-
-.my-\[10vh\]{
-  margin-top: 10vh;
-  margin-bottom: 10vh;
-}
-
-.mr-2{
-  margin-right: 0.5rem;
-}
-
-.mt-\[\]{
-  margin-top: ;
-}
-
-.mt-\[20vh\]{
-  margin-top: 20vh;
-}
-
-.mt-\[15vh\]{
-  margin-top: 15vh;
-}
-
-.mt-\[10vh\]{
-  margin-top: 10vh;
-}
-
-.mb-\[10vh\]{
-  margin-bottom: 10vh;
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mt-4{
   margin-top: 1rem;
 }
 
-.mt-8{
-  margin-top: 2rem;
-}
-
-.mt-16{
-  margin-top: 4rem;
+.mr-2{
+  margin-right: 0.5rem;
 }
 
 .block{
@@ -583,10 +550,6 @@ Ensure the default browser behavior of the `hidden` attribute.
   height: -webkit-max-content;
   height: -moz-max-content;
   height: max-content;
-}
-
-.h-full{
-  height: 100%;
 }
 
 .min-h-screen{
@@ -625,8 +588,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   cursor: pointer;
 }
 
+.flex-wrap{
+  flex-wrap: wrap;
+}
+
 .place-items-center{
   place-items: center;
+}
+
+.items-end{
+  align-items: flex-end;
 }
 
 .items-center{
@@ -643,10 +614,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .gap-2{
   gap: 0.5rem;
-}
-
-.overflow-hidden{
-  overflow: hidden;
 }
 
 .overflow-x-hidden{
