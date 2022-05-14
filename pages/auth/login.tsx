@@ -21,10 +21,10 @@ const isAllowedToLogin = (email: string, password: string) => {
 
 const Login = () => {
 	useEffect(() => {
-		const { authToken, stayConnected } = getSavedUserInfo() || {}
+		const { authToken } = getSavedUserInfo() || {}
 
 		if (authToken) {
-			// Router.push('/admin')
+			Router.push('/admin')
 		}
 	})
 
@@ -34,6 +34,7 @@ const Login = () => {
 	const keepUserConnected = (userConnectionResponde: any) => {
 		if (stayConnected.current) {
 			saveUserInfo({
+				email: userConnectionResponde.email,
 				authToken: userConnectionResponde.authToken,
 				stayConnected: stayConnected.current?.checked,
 			})

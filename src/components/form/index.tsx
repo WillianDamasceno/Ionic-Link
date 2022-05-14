@@ -2,7 +2,7 @@ import { LegacyRef } from 'react'
 
 interface BasicInputProps {
 	inputId: string,
-	reference: LegacyRef<HTMLInputElement> | undefined | null,
+	reference?: LegacyRef<HTMLInputElement> | undefined | null,
 	optional?: boolean,
 	label?: string,
 	[rest:string]: unknown

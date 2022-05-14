@@ -1,8 +1,39 @@
 import Head from 'next/head'
 import Router from 'next/router'
-import { useEffect, useState } from 'react'
-import { getRegisteredLinks } from '../../src/graphql/client'
+import { useEffect, useRef, useState } from 'react'
+
+import { getRegisteredLinks, createLink } from '../../src/graphql/client'
 import { getSavedUserInfo } from '../../src/utils/auth'
+import { Form } from '../../src/components'
+
+interface Link {
+	id: string
+	title: string
+	url: string
+}
+
+interface RegisteredLinks {
+	links: Link[]
+}
+
+const LinkList = ({ links }: RegisteredLinks) => (
+	<div>
+		{links.length ? (
+			links.map((link) => {
+				const { id, title, url } = link
+
+				return (
+					<div key={id} className='flex justify-between gap-4 p-4 my-4 rounded border'>
+						<p>{title}</p>
+						<p>{url}</p>
+					</div>
+				)
+			})
+		) : (
+			<p className='text-center'>Links not Found</p>
+		)}
+	</div>
+)
 
 const Home = () => {
 	const [links, setLinks] = useState([])
@@ -15,8 +46,7 @@ const Home = () => {
 			return
 		}
 
-		getRegisteredLinks(authToken)
-			.then((res) => setLinks(res.response.registeredLinks))
+		getRegisteredLinks(authToken).then((res) => setLinks(res.response.registeredLinks))
 	}, [])
 
 	const logOut = () => {
@@ -25,14 +55,18 @@ const Home = () => {
 		Router.push('/auth/login')
 	}
 
+	const titleRef = useRef<HTMLInputElement>(null)
+	const linkRef = useRef<HTMLInputElement>(null)
+	const registerLinkRef = useRef<HTMLButtonElement>(null)
+
 	return (
 		<>
 			<Head>
 				<title>Ionic Link</title>
 			</Head>
 
-			<main className='grid place-items-center min-h-screen p-8 bg-gray-100'>
-				<div className='container h-max p-8 md:p-16 rounded-3xl bg-white shadow-lg'>
+			<main className='p-8 bg-gray-100'>
+				<div className='container h-max mx-auto p-8 md:p-16 rounded-3xl bg-white shadow-lg'>
 					<button
 						type='button'
 						onClick={logOut}
@@ -48,24 +82,37 @@ const Home = () => {
 
 					<h2 className='text-center'>Welcome to the Admin</h2>
 
-					{links.length ? (
-						links.map((link) => {
-							const { id, title, url } = link
+					<div className='flex gap-4 items-end flex-wrap py-4'>
+						<button
+							type='button'
+							ref={registerLinkRef}
+							className='
+								w-max py-3 px-6 md:px-8 rounded
+								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
+								outline-offset-2 accent-slate-400 transition
+							'
+							onClick={() => {
+								const res = createLink({
+									title: String(titleRef.current?.value),
+									url: String(linkRef.current?.value),
+									clientIdentifier: {
+										connect: {
+											email: String(getSavedUserInfo()?.email)
+										}
+									},
+								})
 
-							return (
-								<div key={id} className='p-4 my-4	 rounded border'>
-									<div className='flex justify-between'>
-										<p>{title}</p>
-										<p>{url}</p>
-									</div>
+								res.then(console.log)
+							}}
+						>
+							Add a link
+						</button>
 
-									{/* <p></p> */}
-								</div>
-							)
-						})
-					) : (
-						<p className='text-center'>Links not Found</p>
-					)}
+						<Form.Input reference={titleRef} inputId='title-input' label='Title' />
+						<Form.Input reference={linkRef} inputId='link-input' label='Link' />
+					</div>
+
+					<LinkList links={links} />
 				</div>
 			</main>
 		</>

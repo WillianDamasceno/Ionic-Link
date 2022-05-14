@@ -11,6 +11,7 @@ const commonHeaders = {
 	},
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type BasicApiConnectionParams = (route: string, variables: object) => Promise<any>
 
 const connectOnApi: BasicApiConnectionParams = async (route: string, variables: object) => {
@@ -36,3 +37,15 @@ export const getClientToken = async (email: string, password: string) =>
 	connectOnApi('/api/auth/login', { email, password })
 
 export const getRegisteredLinks = async (authToken: string) => connectOnApi('/api/links', { authToken })
+
+type createLinkParams = {
+	title: string
+	url: string
+	clientIdentifier: {
+		connect: {
+			email: string
+		}
+	}
+}
+
+export const createLink = async (linkInfo: createLinkParams) => connectOnApi('/api/links/create', linkInfo)

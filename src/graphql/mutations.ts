@@ -44,3 +44,23 @@ export const UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN = gql`
 		}
 	}
 `
+
+export const CREATE_LINK = gql`
+	mutation CreateLink($title: String!, $url: String!, $clientIdentifier: ClientCreateOneInlineInput!) {
+		createLink(data: {title: $title, url: $url, active: true, client: $clientIdentifier}) {
+			id
+			title
+			url
+			active
+		}
+	}
+`
+
+export const PUBLISH_LINK = gql`
+	mutation PublishLink($linkId: ID!) {
+		publishLink(where: {id: $linkId}) {
+			id
+			title
+		}
+	}
+`
