@@ -43,6 +43,8 @@
         "comma-dangle": "off",
         "react/require-default-props": "off",
         "no-unused-expressions": "off",
-        "consistent-return": "off"
+        "consistent-return": "off",
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["error"]
     }
 }
