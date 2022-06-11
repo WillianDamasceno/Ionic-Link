@@ -9,7 +9,7 @@
 	"dependencies": {
 		"graphql": "^16.3.0",
 		"graphql-request": "^4.0.0",
-		"next": "latest",
+		"next": "^12.1.5",
 		"nextjs-cors": "^2.1.0",
 		"prettier": "^2.6.2",
 		"react": "17.0.2",
