@@ -39,6 +39,7 @@ export const createJwtToken = (username: string, secretKey: string): string => {
 	return token
 }
 
+// TODO: Implement some way to control the time for maxAge
 export const serializeHttpOnlyCookie = (key: string, token: string) => {
 	const serialized = serialize(key, token, {
 		httpOnly: true,
