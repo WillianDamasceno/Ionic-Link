@@ -3,11 +3,13 @@ import NextCors from 'nextjs-cors'
 
 import { NEW_CLIENT, PUBLISH_CLIENT } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
-import { createAuthToken } from '../../../src/utils/auth'
+import { createJwtToken } from '../../../src/utils/auth'
+
+const secretKey = process.env.JWT_SECRET_KEY || ''
 
 const registerNewClient = async (email: string, username: string, password: string) => {
 	try {
-		const authToken = createAuthToken()
+		const authToken = createJwtToken(username, secretKey)
 
 		const data = await gcms.request(NEW_CLIENT, {
 			email,
@@ -25,7 +27,6 @@ const registerNewClient = async (email: string, username: string, password: stri
 	}
 }
 
-// eslint-disable-next-line consistent-return
 const register = async (req: NextApiRequest, res: NextApiResponse) => {
 	await NextCors(req, res, {
 		optionsSuccessStatus: 200,
