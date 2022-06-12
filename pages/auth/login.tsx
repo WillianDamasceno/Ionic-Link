@@ -32,7 +32,7 @@ const Login = () => {
 		fetch('http://localhost:3000/api/auth/isJwtTokenSet')
 			.then((res) => res.json())
 			.then((res) => {
-				if (res.success || res.response.isJwtTokenSet) {
+				if (res.success && res.response.isJwtTokenSet) {
 					Router.push('/admin')
 				}
 			})
