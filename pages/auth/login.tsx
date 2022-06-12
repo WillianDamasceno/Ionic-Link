@@ -2,66 +2,97 @@ import Head from 'next/head'
 import Link from 'next/link'
 import Router from 'next/router'
 import { useEffect, useState, useRef } from 'react'
+import type { FormEvent } from 'react'
 
 import { Form, Alert } from '../../src/components'
-import { saveUserInfo, getSavedUserInfo } from '../../src/utils/auth'
-import { getClientToken } from '../../src/graphql/client'
 
-const isAllowedToLogin = (email: string, password: string) => {
+const isValidEmail = (email: string) => {
 	const MIN_EMAIL_LENGTH = 6
+
+	const validEmailLength = email.length >= MIN_EMAIL_LENGTH
+
+	return validEmailLength
+}
+
+const isValidPassword = (password: string) => {
 	const MIN_PASSWORD_LENGTH = 8
 	const invalidPasswords = Object.freeze(['undefined', 'null'])
 
-	const validEmailLength = email.length >= MIN_EMAIL_LENGTH
 	const validPasswordLength = password.length >= MIN_PASSWORD_LENGTH
 	const validPassword = invalidPasswords.every((invalid) => invalid !== password)
 
-	return validEmailLength && validPasswordLength && validPassword
+	return validPasswordLength && validPassword
 }
 
 const Login = () => {
+	// const router = useRouter()
+
+	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		const { authToken } = getSavedUserInfo() || {}
-
-		if (authToken) {
-			Router.push('/admin')
-		}
-	})
-
-	const stayConnected = useRef<HTMLInputElement>(null)
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const keepUserConnected = (userConnectionResponde: any) => {
-		if (stayConnected.current) {
-			saveUserInfo({
-				email: userConnectionResponde.email,
-				authToken: userConnectionResponde.authToken,
-				stayConnected: stayConnected.current?.checked,
+		fetch('http://localhost:3000/api/auth/isJwtTokenSet')
+			.then((res) => res.json())
+			.then((res) => {
+				if (res.success || res.response.isJwtTokenSet) {
+					Router.push('/admin')
+				}
 			})
+	}, [])
+
+	const emailInputRef = useRef<HTMLInputElement>(null)
+	const passwordInputRef = useRef<HTMLInputElement>(null)
+	const stayConnectedCheckboxRef = useRef<HTMLInputElement>(null)
+
+	// TODO: Change the localhost to an env variable
+	const login = async (email: string, password: string) =>
+		(
+			await fetch('http://localhost:3000/api/auth/login', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			})
+		).json()
+
+	const [isHiddenAlert, setIsHiddenAlert] = useState(true)
+
+	const handleLogin = async (e: FormEvent) => {
+		e.preventDefault()
+
+		const email = String(emailInputRef.current?.value)
+		const password = String(passwordInputRef.current?.value)
+		// TODO: Define a login of staying connected and implement it
+		// const stayConnected = stayConnectedCheckboxRef.current?.value
+
+		if (!isValidEmail(email)) {
+			// TODO: Handle invalid E-mails
+			return console.log('Invalid E-mail')
 		}
-	}
 
-	const [connectionWorked, setConnectionWorked] = useState(true)
+		if (!isValidPassword(password)) {
+			// TODO: Handle invalid passwords
+			return console.log('Invalid Password')
+		}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const handleUserConnection = async (userConnectionAttempt: any) => {
-		setConnectionWorked(true)
+		try {
+			const { success, response } = await login(email, password)
 
-		const connection = await userConnectionAttempt
+			if (!success) {
+				setIsHiddenAlert(false)
+				return console.log({ isLoggedIn: response.isLoggedIn })
+			}
 
-		if (connection?.success) {
-			keepUserConnected(connection.response)
+			// TODO: Use the isJwtTokenSet api route to check id the auth is done
+			// and then redirect the user to the admin page
 			Router.push('/admin')
-			return
+		} catch (error) {
+			console.log(error)
 		}
-
-		setConnectionWorked(false)
 	}
-
-	const [loginPermission, setLoginPermission] = useState(false)
-	const emailInput = useRef<HTMLInputElement>(null)
-	const passwordInput = useRef<HTMLInputElement>(null)
-	const loginButton = useRef<HTMLButtonElement>(null)
 
 	return (
 		<>
@@ -71,16 +102,11 @@ const Login = () => {
 
 			<main className='grid place-items-center p-4 mt-4 md:p-8'>
 				<form
-					onInput={() => {
-						const email = String(emailInput.current?.value)
-						const password = String(passwordInput.current?.value)
-
-						setLoginPermission(false)
-						return isAllowedToLogin(email, password) && setLoginPermission(true)
-					}}
 					className='
 						login-form grid gap-4 w-full max-w-lg h-max p-8 md:p-12 rounded-3xl bg-white shadow-xl
 					'
+					onSubmit={handleLogin}
+					onInput={() => setIsHiddenAlert(true)}
 				>
 					<h1 className='text-4xl'>Login</h1>
 
@@ -89,7 +115,7 @@ const Login = () => {
 						type='email'
 						label='E-mail'
 						minLength='6'
-						reference={emailInput}
+						reference={emailInputRef}
 						title='Type your Registered E-mail'
 						autoFocus
 					/>
@@ -97,7 +123,7 @@ const Login = () => {
 					<Form.Input
 						inputId='password'
 						type='password'
-						reference={passwordInput}
+						reference={passwordInputRef}
 						minLength='8'
 						label='Password'
 						title='Type your password'
@@ -105,22 +131,14 @@ const Login = () => {
 
 					<Form.Checkbox
 						inputId='stay-connected'
-						reference={stayConnected}
+						reference={stayConnectedCheckboxRef}
 						label='Stay connected'
 						title='Click to Login Automatically'
 					/>
 
 					<div className='flex gap-2'>
 						<button
-							type={loginPermission ? 'button' : 'submit'}
-							ref={loginButton}
-							onClick={async () => {
-								if (loginButton.current?.type === 'button' && emailInput.current && passwordInput.current) {
-									await handleUserConnection(
-										getClientToken(emailInput.current?.value, passwordInput.current?.value)
-									)
-								}
-							}}
+							type='submit'
 							className='
 								login-button w-max py-3 px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
@@ -144,7 +162,7 @@ const Login = () => {
 						</Link>
 					</div>
 
-					<Alert.Error isHidden={connectionWorked} message='The E-mail or the password is incorrect' />
+					<Alert.Error isHidden={isHiddenAlert} message='The E-mail or the password is incorrect' />
 				</form>
 			</main>
 		</>
