@@ -31,3 +31,12 @@ export const REGISTERED_LINKS = gql`
 		}
 	}
 `
+
+export const GET_EMAIL_BY_AUTH_TOKEN = gql`
+	query getEmailByAuthToken($authToken: String!) {
+		clients(where: { authToken: $authToken }) {
+			id
+			email
+		}
+	}
+`
