@@ -47,12 +47,7 @@ export const getRegisteredLinks = async (authToken: string) => connectOnApi('/ap
 
 type createLinkParams = {
 	title: string
-	url: string
-	clientIdentifier: {
-		connect: {
-			email: string
-		}
-	}
+	url: string,
 }
 
 export const createLink = async (linkInfo: createLinkParams) => connectOnApi('/api/links/create', linkInfo)
