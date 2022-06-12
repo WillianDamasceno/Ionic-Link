@@ -2,7 +2,14 @@ import { GraphQLClient } from 'graphql-request'
 
 import { to } from '../utils/promises'
 
-export const gcms = new GraphQLClient(String(process.env.GRAPHCMS_ENDPOINT))
+export const gcms = new GraphQLClient(
+	String(process.env.GRAPHCMS_ENDPOINT),
+	{
+		headers: {
+			Authorization: `Bearer ${process.env.GRAPHCMS_PRODUCTION_TOKEN}`
+		}
+	}
+)
 
 const commonHeaders = {
 	headers: {
