@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import NextCors from 'nextjs-cors'
 
 import { CLIENT_TOKEN_BY_EMAIL } from '../../../src/graphql/queries'
-import { UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN } from '../../../src/graphql/mutations'
+import { UPDATE_PUBLISHED_USER_AUTH_TOKEN } from '../../../src/graphql/mutations'
 import { gcms } from '../../../src/graphql/client'
 import { createJwtToken, serializeHttpOnlyCookie } from '../../../src/utils/auth'
 
@@ -32,7 +32,7 @@ const isExistentUser = async (email: string, password: string) => {
 }
 
 const updateUserAuthToken = async (email: string, username: string, authToken: string) => {
-	await gcms.request(UPDATE_NON_PUBLISHED_USER_AUTH_TOKEN, {
+	await gcms.request(UPDATE_PUBLISHED_USER_AUTH_TOKEN, {
 		email,
 		username,
 		authToken,
