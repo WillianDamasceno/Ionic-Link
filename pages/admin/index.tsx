@@ -35,22 +35,22 @@ const LinkList = ({ links }: RegisteredLinks) => (
 	</div>
 )
 
-const Home = () => {
+const Admin = () => {
 	const [links, setLinks] = useState([])
 
+	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		const { authToken } = getSavedUserInfo() || {}
-
-		if (!authToken) {
-			Router.push('/auth/login')
-			return
-		}
-
-		getRegisteredLinks(authToken).then((res) => setLinks(res.response.registeredLinks))
+		fetch('http://localhost:3000/api/auth/isJwtTokenSet')
+			.then((res) => res.json())
+			.then((res) => {
+				if (!res.response.isJwtTokenSet) {
+					Router.push('/auth/login')
+				}
+			})
 	}, [])
 
-	const logOut = () => {
-		localStorage.setItem('userAuthInfo', '')
+	const logOut = async () => {
+		await fetch('http://localhost:3000/api/auth/logout')
 
 		Router.push('/auth/login')
 	}
@@ -58,6 +58,15 @@ const Home = () => {
 	const titleRef = useRef<HTMLInputElement>(null)
 	const linkRef = useRef<HTMLInputElement>(null)
 	const registerLinkRef = useRef<HTMLButtonElement>(null)
+
+	const registerLink = async () => {
+		const res = await createLink({
+			title: String(titleRef.current?.value),
+			url: String(linkRef.current?.value),
+		})
+
+		console.log(res.response.createLink)
+	}
 
 	return (
 		<>
@@ -91,19 +100,7 @@ const Home = () => {
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
 								outline-offset-2 accent-slate-400 transition
 							'
-							onClick={() => {
-								const res = createLink({
-									title: String(titleRef.current?.value),
-									url: String(linkRef.current?.value),
-									clientIdentifier: {
-										connect: {
-											email: String(getSavedUserInfo()?.email)
-										}
-									},
-								})
-
-								res.then(console.log)
-							}}
+							onClick={registerLink}
 						>
 							Add a link
 						</button>
@@ -119,4 +116,4 @@ const Home = () => {
 	)
 }
 
-export default Home
+export default Admin

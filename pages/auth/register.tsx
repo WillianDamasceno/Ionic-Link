@@ -58,7 +58,6 @@ const Register = () => {
 	const passwordInput = useRef(null)
 	const usernameInput = useRef(null)
 
-	const registerButton = useRef<HTMLButtonElement>(null)
 	const [isAllowedToRegister, setIsAllowedToRegister] = useState(false)
 
 	useEffect(() => {
@@ -80,6 +79,15 @@ const Register = () => {
 
 			<main className='grid place-items-center p-4 md:p-8'>
 				<form
+					onSubmit={async (e) => {
+						e.preventDefault()
+
+						const { value: email } = emailInput.current || { value: '' }
+						const { value: password } = passwordInput.current || { value: '' }
+						const { value: username } = usernameInput.current || { value: '' }
+
+						await handleUserRegistration(registerClient(email, password, username))
+					}}
 					className='
 						register-form grid gap-4 w-full max-w-2xl h-max p-8 md:p-12 rounded-3xl bg-white shadow-lg
 					'
@@ -118,17 +126,7 @@ const Register = () => {
 
 					<div className='flex gap-2'>
 						<button
-							type={isAllowedToRegister ? 'button' : 'submit'}
-							ref={registerButton}
-							onClick={async () => {
-								const { value: email } = emailInput.current || { value: '' }
-								const { value: password } = passwordInput.current || { value: '' }
-								const { value: username } = usernameInput.current || { value: '' }
-
-								if (registerButton.current?.type === 'button') {
-									await handleUserRegistration(registerClient(email, password, username))
-								}
-							}}
+							type='submit'
 							className='
 								w-max py-3 px-6 md:px-8 rounded-md
 								text-white bg-purple-600 hover:bg-purple-700 active:bg-purple-600
