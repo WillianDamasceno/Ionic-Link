@@ -29,7 +29,7 @@ const Login = () => {
 
 	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		fetch('http://localhost:3000/api/auth/isJwtTokenSet')
+		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/isJwtTokenSet`)
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.success && res.response.isJwtTokenSet) {
@@ -42,10 +42,9 @@ const Login = () => {
 	const passwordInputRef = useRef<HTMLInputElement>(null)
 	const stayConnectedCheckboxRef = useRef<HTMLInputElement>(null)
 
-	// TODO: Change the localhost to an env variable
 	const login = async (email: string, password: string) =>
 		(
-			await fetch('http://localhost:3000/api/auth/login', {
+			await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`, {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
@@ -86,7 +85,7 @@ const Login = () => {
 				return console.log({ isLoggedIn: response.isLoggedIn })
 			}
 
-			// TODO: Use the isJwtTokenSet api route to check id the auth is done
+			// TODO: Use the isJwtTokenSet api route to check if the auth is done
 			// and then redirect the user to the admin page
 			Router.push('/admin')
 		} catch (error) {

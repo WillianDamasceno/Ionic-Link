@@ -40,17 +40,17 @@ const Admin = () => {
 
 	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		fetch('http://localhost:3000/api/auth/isJwtTokenSet')
+		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/isJwtTokenSet`)
 			.then((res) => res.json())
 			.then((res) => {
 				if (!res.response.isJwtTokenSet) {
-					Router.push('/auth/login')
+					return Router.push('/auth/login')
 				}
 			})
 	}, [])
 
 	const logOut = async () => {
-		await fetch('http://localhost:3000/api/auth/logout')
+		await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout`)
 
 		Router.push('/auth/login')
 	}
