@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 
-import { to } from '../utils/promises'
+import { to } from '../utils'
 
 export const gcms = new GraphQLClient(
 	String(process.env.GRAPHCMS_ENDPOINT),

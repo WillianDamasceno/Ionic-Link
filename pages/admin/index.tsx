@@ -40,14 +40,14 @@ const Admin = () => {
 
 	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/isJwtTokenSet`)
+		fetch('/api/auth/isJwtTokenSet')
 			.then((res) => res.json())
 			.then((res) => {
 				if (!res.response.isJwtTokenSet) {
 					return Router.push('/auth/login')
 				}
 
-				fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/links`)
+				fetch('/api/links')
 					.then((response) => response.json())
 					.then((response) => {
 						if (response.success) {
@@ -58,7 +58,7 @@ const Admin = () => {
 	}, [])
 
 	const logOut = async () => {
-		await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/logout`)
+		await fetch('/api/auth/logout')
 
 		Router.push('/auth/login')
 	}

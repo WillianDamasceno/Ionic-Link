@@ -29,7 +29,7 @@ const Login = () => {
 
 	// TODO: Create a hook called useAuth and put this useEffect inside of it
 	useEffect(() => {
-		fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/isJwtTokenSet`)
+		fetch('/api/auth/isJwtTokenSet')
 			.then((res) => res.json())
 			.then((res) => {
 				if (res.success && res.response.isJwtTokenSet) {
@@ -44,7 +44,7 @@ const Login = () => {
 
 	const login = async (email: string, password: string) =>
 		(
-			await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`, {
+			await fetch('/api/auth/login', {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
