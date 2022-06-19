@@ -46,6 +46,14 @@ const Admin = () => {
 				if (!res.response.isJwtTokenSet) {
 					return Router.push('/auth/login')
 				}
+
+				fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/links`)
+					.then((response) => response.json())
+					.then((response) => {
+						if (response.success) {
+							setLinks(response.response?.registeredLinks)
+						}
+					})
 			})
 	}, [])
 

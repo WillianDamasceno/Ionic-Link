@@ -6,7 +6,7 @@ export const gcms = new GraphQLClient(
 	String(process.env.GRAPHCMS_ENDPOINT),
 	{
 		headers: {
-			Authorization: `Bearer ${process.env.GRAPHCMS_PRODUCTION_TOKEN}`
+			Authorization: `Bearer ${process.env.GRAPHCMS_TOKEN}`
 		}
 	}
 )
@@ -19,9 +19,9 @@ const commonHeaders = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type BasicApiConnectionParams = (route: string, variables: object) => Promise<any>
+type BasicApiConnectionParams = (route: string, variables?: object) => Promise<any>
 
-const connectOnApi: BasicApiConnectionParams = async (route: string, variables: object) => {
+const connectOnApi: BasicApiConnectionParams = async (route: string, variables = {}) => {
 	const [error, res] = await to(
 		fetch(route, {
 			method: 'POST',
@@ -43,7 +43,7 @@ export const registerClient = async (email: string, password: string, username: 
 export const getClientToken = async (email: string, password: string) =>
 	connectOnApi('/api/auth/login', { email, password })
 
-export const getRegisteredLinks = async (authToken: string) => connectOnApi('/api/links', { authToken })
+export const getRegisteredLinks = async () => connectOnApi('/api/links')
 
 type createLinkParams = {
 	title: string
